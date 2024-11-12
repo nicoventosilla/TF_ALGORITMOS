@@ -171,6 +171,34 @@ void moverCoche(Coche& coche)
     dibujarCoche(coche);
 }
 
+void dibujarX(int x, int y)
+{
+    color(15); // Color blanco
+
+    gotoxy(x, y);
+    cout << CUBO;
+    gotoxy(x + 1, y + 1);
+    cout << CUBO;
+    gotoxy(x + 2, y + 2);
+    cout << CUBO;
+    gotoxy(x + 3, y + 3);
+    cout << CUBO;
+    gotoxy(x + 4, y + 4);
+    cout << CUBO;
+
+    gotoxy(x + 4, y);
+    cout << CUBO;
+    gotoxy(x + 3, y + 1);
+    cout << CUBO;
+    gotoxy(x + 2, y + 2);
+    cout << CUBO;
+    gotoxy(x + 1, y + 3);
+    cout << CUBO;
+    gotoxy(x, y + 4);
+    cout << CUBO;
+}
+
+// Función principal del juego
 // Función principal del juego
 void juego()
 {
@@ -182,18 +210,58 @@ void juego()
     int centroX = 150 - 10; // Calcula la posición horizontal cerca del borde derecho del rectángulo negro
     Coche cocheEnemigo = {centroX, centroY, -1, 0, COLOR_COCHE_ENEMIGO, 1}; // Posición inicial en el centro vertical del rectángulo negro, alineado a la derecha
 
+    int vidas = 3; // Contador de vidas
+
     ocultarCursor();
     dibujarEscenario();
     dibujarCoche(cochePrincipal);
     dibujarCoche(cocheEnemigo);
 
+    bool juegoActivo = true; // Flag para controlar el bucle del juego
+
     // Bucle principal del juego
-    while (true)
+    while (juegoActivo)
     {
+        // Mostrar el contador de vidas
+        gotoxy(160, 5);
+        color(15); // Color blanco
+        cout << "Vidas: " << vidas;
+
         moverCoche(cochePrincipal);
         borrarCoche(cocheEnemigo);
         cocheEnemigo.x += cocheEnemigo.dx * cocheEnemigo.velocidad;
         if (cocheEnemigo.x < 0) cocheEnemigo.x = 140; // Reinicia la posición del coche enemigo cuando sale del rectángulo negro
+
+        // Detección de colisión
+        if (cochePrincipal.x < cocheEnemigo.x + 10 &&
+            cochePrincipal.x + 10 > cocheEnemigo.x &&
+            cochePrincipal.y < cocheEnemigo.y + 5 &&
+            cochePrincipal.y + 5 > cocheEnemigo.y)
+        {
+            borrarCoche(cochePrincipal); // Borra el coche principal
+            dibujarX(cochePrincipal.x, cochePrincipal.y); // Dibuja la "X" en su lugar
+            vidas--; // Decrementa el contador de vidas
+            gotoxy(160, 7);
+            cout << "Colision! Vidas restantes: " << vidas;
+            Sleep(2000); // Pausa para mostrar el mensaje de colisión
+
+            // Borrar la "X" de la colisión
+            borrarCoche({cochePrincipal.x, cochePrincipal.y, 0, 0, 0, 1});
+
+            if (vidas == 0)
+            {
+                juegoActivo = false; // Termina el bucle del juego si no hay vidas restantes
+            }
+            else
+            {
+                // Reinicia la posición de los coches
+                cochePrincipal.x = 0;
+                cochePrincipal.y = centroY;
+                cocheEnemigo.x = centroX;
+                cocheEnemigo.y = centroY;
+            }
+        }
+
         dibujarCoche(cochePrincipal);
         dibujarCoche(cocheEnemigo);
         Sleep(30);
