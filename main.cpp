@@ -1,14 +1,18 @@
-#include <iostream>
-#include <windows.h>
-#include <conio.h>
-#include <ctime>
-#include <cstdio>
+#include <iostream> // Para usar las funciones de entrada y salida
+#include <windows.h> // Para usar las funciones de la consola
+#include <conio.h> // Para usar la función _kbhit()
+#include <ctime> // Para usar la función time()
+#include <cstdio> // Para usar la función _getch()
+#include <cstdlib> // Para usar la función exit()
+#include <chrono> // Para medir el tiempo de ejecución
 
 using namespace std;
 
 // Constantes
 const char CUBO = 219;
 const int COLOR_FONDO = 10;
+const int COLOR_FONDO_NIVEL2 = 14;
+const int COLOR_FONDO_NIVEL3 = 12;
 const int COLOR_COCHE_PRINCIPAL = 10;
 const int COLOR_COCHE_ENEMIGO = 12;
 const int ANCHO = 100;
@@ -65,13 +69,13 @@ void esperarTecla()
 
 // Funciones de dibujo
 
-// Dibuja el escenario del juego con tres rectángulos horizontales
-void dibujarEscenario()
+// Dibuja el escenario del juego con tres rectángulos horizontales y líneas blancas
+void dibujarEscenario(int colorFondo)
 {
     ocultarCursor();
 
-    // Primer rectángulo (verde claro)
-    color(COLOR_FONDO);
+    // Primer rectángulo
+    color(colorFondo);
     for (int i = 0; i < 15; i++)
     {
         gotoxy(0, i);
@@ -81,19 +85,8 @@ void dibujarEscenario()
         }
     }
 
-    // Segundo rectángulo (negro) con líneas horizontales de pistas de 3 carriles
-    color(0);
-    for (int i = 15; i < 35; i++)
-    {
-        gotoxy(0, i);
-        for (int j = 0; j < 150; j++)
-        {
-            cout << CUBO;
-        }
-    }
-
-    // Tercer rectángulo (verde claro)
-    color(COLOR_FONDO);
+    // Tercer rectángulo
+    color(colorFondo);
     for (int i = 35; i < 50; i++)
     {
         gotoxy(0, i);
@@ -102,7 +95,21 @@ void dibujarEscenario()
             cout << CUBO;
         }
     }
+
+    // Líneas blancas horizontales en las líneas 21 y 28
+    color(15); // Color blanco
+    for (int j = 0; j < 150; j += 6)
+    {
+        for (int k = 0; k < 4; k++)
+        {
+            gotoxy(j + k, 21);
+            cout << CUBO;
+            gotoxy(j + k, 28);
+            cout << CUBO;
+        }
+    }
 }
+
 
 // Dibuja un coche en la posición especificada
 void dibujarCoche(const Coche& coche)
@@ -118,7 +125,6 @@ void dibujarCoche(const Coche& coche)
     }
 }
 
-
 // Borra un coche de la pantalla
 void borrarCoche(const Coche& coche)
 {
@@ -127,6 +133,21 @@ void borrarCoche(const Coche& coche)
     dibujarCoche(cocheBorrado);
 }
 
+// Redibuja las líneas blancas horizontales en las líneas 21 y 28
+void redibujarLineas()
+{
+    color(15); // Color blanco
+    for (int j = 0; j < 150; j += 6) // Incrementa en 6 para tener 4 cubos y 2 de separación
+    {
+        for (int k = 0; k < 4; k++) // Dibuja 5 cubos
+        {
+            gotoxy(j + k, 21);
+            cout << CUBO;
+            gotoxy(j + k, 28);
+            cout << CUBO;
+        }
+    }
+}
 
 // Funciones de lógica del juego
 
@@ -168,6 +189,9 @@ void moverCoche(Coche& coche)
     if (coche.y < 15) coche.y = 15;
     if (coche.y >= 35 - 5) coche.y = 35 - 5;
 
+    // Redibujar las líneas blancas
+    redibujarLineas();
+
     dibujarCoche(coche);
 }
 
@@ -198,63 +222,128 @@ void dibujarX(int x, int y)
     cout << CUBO;
 }
 
-// Función principal del juego
-// Función principal del juego
-void juego()
+// Muestra un mensaje de nivel antes de iniciar el juego
+void mostrarMensajeNivel(int nivel)
 {
+    system("cls");
+    cout << "-------------------" << endl;
+    cout << "Nivel " << nivel << endl;
+    cout << "-------------------" << endl;
+    Sleep(2000); // Pausa para mostrar el mensaje de nivel
+}
+
+// Muestra un mensaje de que el jugador perdió el juego
+void mostrarMensajePerdio()
+{
+    system("cls");
+    color(15);
+    cout << "-------------------" << endl;
+    cout << "Perdiste el juego!" << endl;
+    cout << "-------------------" << endl;
+    Sleep(1000); // Pausa para mostrar el mensaje de que perdió el juego
+    esperarTecla(); // Espera a que el usuario presione una tecla para regresar al menú principal
+}
+
+// Muestra un mensaje de que el jugador ganó el juego
+void mostrarMensajeGanasteElJuego()
+{
+    system("cls");
+    color(15);
+    cout << "-------------------" << endl;
+    cout << "Felicidades! Has ganado el juego!" << endl;
+    cout << "-------------------" << endl;
+    cout << "Presione Enter para continuar..." << endl;
+    while (_getch() != 13); // Espera a que el usuario presione Enter (código ASCII 13)
+}
+
+// Muestra un mensaje de que el jugador ganó el nivel
+void mostrarMensajeGanaste()
+{
+    system("cls");
+    color(15);
+    cout << "-------------------" << endl;
+    cout << "Felicidades! Has ganado el nivel!" << endl;
+    cout << "-------------------" << endl;
+    cout << "Presione Enter para continuar..." << endl;
+    while (_getch() != 13); // Espera a que el usuario presione Enter (código ASCII 13)
+}
+
+// Función principal del juego
+
+void juego(int nivel); // Forward declaration
+
+void jugarNivel(int nivel, int colorFondo, int tiempoNivel, int siguienteNivel)
+{
+    mostrarMensajeNivel(nivel);
+
     system("cls");
 
     // Inicializa los coches
-    int centroY = 15 + (35 - 15) / 2 - 2; // Calcula el centro vertical del rectángulo negro
-    Coche cochePrincipal = {0, centroY, 0, 0, COLOR_COCHE_PRINCIPAL, 1}; // Posición inicial en el centro vertical del rectángulo negro, alineado a la izquierda
-    int centroX = 150 - 10; // Calcula la posición horizontal cerca del borde derecho del rectángulo negro
-    Coche cocheEnemigo = {centroX, centroY, -1, 0, COLOR_COCHE_ENEMIGO, 1}; // Posición inicial en el centro vertical del rectángulo negro, alineado a la derecha
+    int centroY = 15 + (35 - 15) / 2 - 2;
+    Coche cochePrincipal = {0, centroY, 0, 0, COLOR_COCHE_PRINCIPAL, 1};
+    int centroX = 150 - 10;
+    Coche cocheEnemigo = {centroX, centroY, -1, 0, COLOR_COCHE_ENEMIGO, 1};
 
-    int vidas = 3; // Contador de vidas
+    int vidas = 3;
 
     ocultarCursor();
-    dibujarEscenario();
+    dibujarEscenario(colorFondo);
     dibujarCoche(cochePrincipal);
     dibujarCoche(cocheEnemigo);
 
-    bool juegoActivo = true; // Flag para controlar el bucle del juego
+    bool juegoActivo = true;
 
-    // Bucle principal del juego
+    time_t tiempoInicio = time(0);
+
     while (juegoActivo)
     {
-        // Mostrar el contador de vidas
         gotoxy(160, 5);
-        color(15); // Color blanco
+        color(15);
         cout << "Vidas: " << vidas;
+
+        time_t tiempoActual = time(0);
+        int segundosTranscurridos = difftime(tiempoActual, tiempoInicio);
+        gotoxy(160, 3);
+        cout << "Tiempo: " << segundosTranscurridos << "s";
+
+        if (segundosTranscurridos >= tiempoNivel)
+        {
+            juegoActivo = false;
+            mostrarMensajeGanaste();
+            if (siguienteNivel != 0)
+            {
+                juego(siguienteNivel);
+            }
+            return;
+        }
 
         moverCoche(cochePrincipal);
         borrarCoche(cocheEnemigo);
         cocheEnemigo.x += cocheEnemigo.dx * cocheEnemigo.velocidad;
-        if (cocheEnemigo.x < 0) cocheEnemigo.x = 140; // Reinicia la posición del coche enemigo cuando sale del rectángulo negro
+        if (cocheEnemigo.x < 0) cocheEnemigo.x = 140;
 
-        // Detección de colisión
         if (cochePrincipal.x < cocheEnemigo.x + 10 &&
             cochePrincipal.x + 10 > cocheEnemigo.x &&
             cochePrincipal.y < cocheEnemigo.y + 5 &&
             cochePrincipal.y + 5 > cocheEnemigo.y)
         {
-            borrarCoche(cochePrincipal); // Borra el coche principal
-            dibujarX(cochePrincipal.x, cochePrincipal.y); // Dibuja la "X" en su lugar
-            vidas--; // Decrementa el contador de vidas
+            borrarCoche(cochePrincipal);
+            dibujarX(cochePrincipal.x, cochePrincipal.y);
+            vidas--;
             gotoxy(160, 7);
             cout << "Colision! Vidas restantes: " << vidas;
-            Sleep(2000); // Pausa para mostrar el mensaje de colisión
+            Sleep(2000);
 
-            // Borrar la "X" de la colisión
             borrarCoche({cochePrincipal.x, cochePrincipal.y, 0, 0, 0, 1});
 
             if (vidas == 0)
             {
-                juegoActivo = false; // Termina el bucle del juego si no hay vidas restantes
+                juegoActivo = false;
+                mostrarMensajePerdio();
+                return;
             }
             else
             {
-                // Reinicia la posición de los coches
                 cochePrincipal.x = 0;
                 cochePrincipal.y = centroY;
                 cocheEnemigo.x = centroX;
@@ -268,6 +357,39 @@ void juego()
     }
 }
 
+void nivel1()
+{
+    jugarNivel(1, COLOR_FONDO, 30, 2);
+}
+
+void nivel2()
+{
+    jugarNivel(2, COLOR_FONDO_NIVEL2, 30, 3);
+}
+
+void nivel3()
+{
+    jugarNivel(3, COLOR_FONDO_NIVEL3, 30, 0);
+}
+
+void juego(int nivel)
+{
+    switch (nivel)
+    {
+    case 1:
+        nivel1();
+        break;
+    case 2:
+        nivel2();
+        break;
+    case 3:
+        nivel3();
+        break;
+    default:
+        break;
+    }
+}
+
 // Funciones de interfaz
 
 // Muestra las instrucciones del juego
@@ -277,7 +399,22 @@ void instrucciones()
     cout << "-------------------";
     cout << "Instrucciones";
     cout << "-------------------" << endl;
-    cout << "\"Aqui van las instrucciones\"" << endl;
+    cout << "DESCRIPCION" << endl;
+    cout <<
+        "Bienvenido a Between Lanes! Preparate para enfrentar el trafico de Lima y aprender a manejar de manera responsable"
+        << endl;
+    cout << endl << "CONTROLES BASICOS" << endl;
+    cout << "Flecha Arriba: Mover hacia arriba" << endl;
+    cout << "Flecha Abajo: Mover hacia abajo" << endl;
+    cout << "Flecha Derecha: Mover a la derecha" << endl;
+    cout << "Flecha Izquierda: Mover a la izquierda" << endl;
+    cout << endl << "OBJETIVO DEL JUEGO" << endl;
+    cout << "Esquivar obstaculos y llegar lo mas lejos posible sin chocar" << endl;
+    cout << "Manten la calma y planea tus movimientos con anticipacion" << endl;
+    cout << endl << "CONSEJOS" << endl;
+    cout << "No te apresures, la paciencia es clave para sobrevivir en el trafico" << endl;
+    cout << "Manten la vista en el camino y evita distracciones" << endl;
+    cout << "Buena suerte!" << endl;
     esperarTecla();
 }
 
@@ -285,10 +422,33 @@ void instrucciones()
 void creditos()
 {
     system("cls");
-    cout << "-------------------";
-    cout << "Creditos";
-    cout << "-------------------" << endl;
-    cout << "\"Aqui van las instrucciones\"" << endl;
+    cout << "-----------------------------------------------------------------------------------" << endl;
+    cout << "-----------------------------------------------------------------------------------" << endl;
+    cout << "  ______     ______     ______     _____     __     ______   ______     ______     " << endl;
+    cout << " /\\  ___\\   /\\  == \\   /\\  ___\\   /\\  __-.  /\\ \\   /\\__  _\\ /\\  __ \\   /\\  ___\\    " <<
+        endl;
+    cout <<
+        " \\ \\ \\____  \\ \\  __<   \\ \\  __\\   \\ \\ \\/\\ \\ \\ \\ \\  \\/_/\\ \\/ \\ \\ \\/\\ \\  \\ \\___  \\   "
+        << endl;
+    cout <<
+        "  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_____\\  \\ \\____-  \\ \\_\\    \\ \\_\\  \\ \\_____\\  \\/\\_____\\  "
+        << endl;
+    cout << "   \\/_____/   \\/_/ /_/   \\/_____/   \\/____/   \\/_/     \\/_/   \\/_____/   \\/_____/  " << endl;
+    cout << "                                                                                   " << endl;
+    cout << "                          UPC CAMPUS SAN MIGUEL                                    " << endl;
+    cout << "                     INTRODUCCION A LOS ALGORITMOS                                 " << endl;
+    cout << "                                                                                   " << endl;
+    cout << "                             PROGRAMADORES                                         " << endl;
+    cout << "                       Ventosilla Chelge Nicolas                                   " << endl;
+    cout << "                          Ponce Wong Jarumi                                        " << endl;
+    cout << "                         Celis Salinas Alvaro                                      " << endl;
+    cout << "                                                                                   " << endl;
+    cout << "                               DOCENTE                                             " << endl;
+    cout << "                         Rojas Sihuay Diego                                        " << endl;
+    cout << "                                                                                   " << endl;
+    cout << "                                                                                   " << endl;
+    cout << "-----------------------------------------------------------------------------------" << endl;
+    cout << "-----------------------------------------------------------------------------------" << endl;
     esperarTecla();
 }
 
@@ -299,13 +459,95 @@ void salir()
     cout << "Gracias por jugar!" << endl;
 }
 
+void mostrarMensajeBienvenida()
+{
+    system("cls");
+    cout <<
+        "************************************************************************************************************************************"
+        << endl;
+    cout <<
+        "************************************************************************************************************************************"
+        << endl;
+    cout <<
+        "                                                                                                                                    "
+        << endl;
+    cout <<
+        "                           ____       __                                                                                            "
+        << endl;
+    cout <<
+        "                          / __ )___  / /__      _____  ___  ____                                                                    "
+        << endl;
+    cout <<
+        "                         / __  / _ \\/ __/ | /| / / _ \\/ _ \\/ __ \\                                                                   "
+        << endl;
+    cout <<
+        "                        / /_/ /  __/ /_ | |/ |/ /  __/  __/ / / /                                                                   "
+        << endl;
+    cout <<
+        "                       /_____/\\___/\\__/ |__/|__/\\___/\\___/_/ /_/                                                                    "
+        << endl;
+    cout <<
+        "                                                                                                                                    "
+        << endl;
+    cout <<
+        "                                                                             __                                                     "
+        << endl;
+    cout <<
+        "                                                                            / /   ____ _____  ___  _____                            "
+        << endl;
+    cout <<
+        "                                                                           / /   / __ `/ __ \\/ _ \\/ ___/                            "
+        << endl;
+    cout <<
+        "                                                                          / /___/ /_/ / / / /  __(__  )                             "
+        << endl;
+    cout <<
+        "                                                                         /_____/\\__,_/_/ /_/\\___/____/                              "
+        << endl;
+    cout <<
+        "                                                                                                                                    "
+        << endl;
+    cout <<
+        "   -------------------------------------------------------------------------------------------------------------------------------  "
+        << endl;
+    cout <<
+        "                                                                                                                                    "
+        << endl;
+    cout <<
+        "        --         --       --          --          --             --         --                   --                --             "
+        << endl;
+    cout <<
+        "                                                                                                                                    "
+        << endl;
+    cout <<
+        "                                                                                                                                    "
+        << endl;
+    cout <<
+        "   -------------------------------------------------------------------------------------------------------------------------------  "
+        << endl;
+    cout <<
+        "                                                                                                                                    "
+        << endl;
+    cout <<
+        "************************************************************************************************************************************"
+        << endl;
+    cout <<
+        "************************************************************************************************************************************"
+        << endl;
+    cout << "Presione cualquier tecla para continuar..." << endl;
+    _getch(); // Espera a que el usuario presione una tecla
+}
+
+
 // Función principal
 int main()
 {
+    mostrarMensajeBienvenida();
     ocultarCursor();
     while (true)
     {
         system("cls");
+        color(15); // Color blanco
         cout << "-------------------";
         cout << "Between Lines";
         cout << "-------------------" << endl;
@@ -317,7 +559,7 @@ int main()
         switch (tecla)
         {
         case '1':
-            juego();
+            juego(1);
             break;
         case '2':
             instrucciones();
