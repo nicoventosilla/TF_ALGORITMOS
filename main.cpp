@@ -59,6 +59,11 @@ void gotoxy(int x, int y)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
+int generarAleatorio(int min, int max) // Generar un numero aleatorio entre min y max
+{
+    return rand() % (max - min + 1) + min;
+}
+
 // Espera a que el usuario presione la tecla ESCAPE
 void esperarTecla()
 {
@@ -185,12 +190,12 @@ void moverCoche(Coche& coche)
         }
         else if (tecla == 77) // Flecha derecha
         {
-            coche.dx = 1;
+            coche.dx = 2; // Mover 2 unidades a la derecha
             coche.dy = 0;
         }
         else if (tecla == 75) // Flecha izquierda
         {
-            coche.dx = -1;
+            coche.dx = -2; // Mover 2 unidades a la izquierda
             coche.dy = 0;
         }
     }
@@ -287,14 +292,19 @@ void mostrarMensajeGanaste()
 
 void juego(int nivel, int& vidas);
 
-void inicializarCochesEnemigos(int numCoches)
+void inicializarCochesEnemigos(int numCoches, int nivel)
 {
     int posicionesY[9] = {15, 23, 30, 15, 23, 30, 15, 23, 30};
     for (int i = 0; i < numCoches; ++i)
     {
-        int centroX = rand() % 50 + 100; // Random position between 100 and 150
-        int velocidad = rand() % 3 + 1; // Random speed between 1 and 3
-        cochesEnemigos[i] = {centroX, posicionesY[i], -1, 0, COLOR_COCHE_ENEMIGO, velocidad};
+        int centroX = generarAleatorio(60, 150);
+        int velocidad = generarAleatorio(1, 3);
+        if (nivel >= 2 && centroX < 75) // Incrementar la velocidad para coches en la izquierda a partir del nivel 2
+        {
+            velocidad += 1; // Incrementar la velocidad en 1
+        }
+        int colorAleatorio = generarAleatorio(1, 15);
+        cochesEnemigos[i] = {centroX, posicionesY[i], -1, 0, colorAleatorio, velocidad};
     }
 }
 
@@ -305,19 +315,14 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
     system("cls");
 
-    // Initialize the main car
     int centroY = 15 + (35 - 15) / 2 - 2;
     Coche cochePrincipal = {0, centroY, 0, 0, COLOR_COCHE_PRINCIPAL, 1};
 
-    // Determine the number of enemy cars based on the level
     int numCochesEnemigos = nivel * 3;
-
-    // Initialize the enemy cars
-    inicializarCochesEnemigos(numCochesEnemigos);
+    inicializarCochesEnemigos(numCochesEnemigos, nivel);
 
     ocultarCursor();
 
-    // Call the appropriate level drawing function
     switch (nivel)
     {
     case 1:
@@ -338,7 +343,6 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     }
 
     bool juegoActivo = true;
-
     time_t tiempoInicio = time(0);
 
     while (juegoActivo)
@@ -378,10 +382,10 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             if (cochesEnemigos[i].x < 0)
             {
                 cochesEnemigos[i].x = 140;
-                cochesEnemigos[i].velocidad = rand() % 3 + 1; // Reassign random speed
+                cochesEnemigos[i].velocidad = generarAleatorio(1, 3); // Asignar una nueva velocidad aleatoria
+                cochesEnemigos[i].color = generarAleatorio(1, 15); // Asignar un nuevo color aleatorio
             }
 
-            // Check for collisions between enemy cars
             for (int j = 0; j < numCochesEnemigos; ++j)
             {
                 if (i != j &&
@@ -390,7 +394,6 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                     cochesEnemigos[i].y < cochesEnemigos[j].y + 5 &&
                     cochesEnemigos[i].y + 5 > cochesEnemigos[j].y)
                 {
-                    // Adjust position to avoid collision
                     cochesEnemigos[i].x = cochesEnemigos[j].x + 20;
                 }
             }
@@ -406,7 +409,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 vidas--;
                 gotoxy(160, 7);
                 cout << "Colision! Vidas restantes: " << vidas;
-                Sleep(2000);
+                Sleep(1000);
 
                 if (vidas == 0)
                 {
@@ -420,7 +423,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                     cochePrincipal.y = centroY;
                     cochesEnemigos[i].x = 150 - 10;
                     cochesEnemigos[i].y = (i == 0) ? 15 : (i == 1) ? 23 : 30;
-                    cochesEnemigos[i].velocidad = rand() % 3 + 1; // Reassign random speed
+                    cochesEnemigos[i].velocidad = generarAleatorio(1, 3); // Asignar una nueva velocidad aleatoria
                 }
             }
 
@@ -428,7 +431,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         }
 
         dibujarCoche(cochePrincipal);
-        Sleep(20);
+        Sleep(30);
     }
 }
 
