@@ -17,6 +17,7 @@ const int COLOR_COCHE_PRINCIPAL = 10;
 const int COLOR_COCHE_ENEMIGO = 12;
 const int ANCHO = 100;
 const int ALTO = 40;
+const int NUM_ENEMY_CARS = 3;
 
 // Estructura para los coches
 struct Coche
@@ -27,7 +28,9 @@ struct Coche
     int velocidad; // Velocidad del coche
 };
 
-// Funciones de utilidades
+Coche cochesEnemigos[NUM_ENEMY_CARS];
+
+// FUNCIONES DE UTILIDADES
 
 // Oculta el cursor de la consola
 void ocultarCursor()
@@ -67,15 +70,15 @@ void esperarTecla()
     while (tecla != 27);
 }
 
-// Funciones de dibujo
+// FUNCIONES DE DIBUJO
 
-// Dibuja el escenario del juego con tres rectángulos horizontales y líneas blancas
-void dibujarEscenario(int colorFondo)
+// Dibuja el escenario del nivel 1
+void dibujarEscenarioNivel1()
 {
     ocultarCursor();
 
     // Primer rectángulo
-    color(colorFondo);
+    color(10);
     for (int i = 0; i < 15; i++)
     {
         gotoxy(0, i);
@@ -86,7 +89,7 @@ void dibujarEscenario(int colorFondo)
     }
 
     // Tercer rectángulo
-    color(colorFondo);
+    color(10);
     for (int i = 35; i < 50; i++)
     {
         gotoxy(0, i);
@@ -96,11 +99,11 @@ void dibujarEscenario(int colorFondo)
         }
     }
 
-    // Líneas blancas horizontales en las líneas 21 y 28
+    // Líneas blancas horizontales en las líneas
     color(15); // Color blanco
-    for (int j = 0; j < 150; j += 6)
+    for (int j = 0; j < 150; j += 6) // Incrementa en 6 para tener 4 cubos y 2 de separación
     {
-        for (int k = 0; k < 4; k++)
+        for (int k = 0; k < 4; k++) // Dibuja 4 cubos
         {
             gotoxy(j + k, 21);
             cout << CUBO;
@@ -110,6 +113,17 @@ void dibujarEscenario(int colorFondo)
     }
 }
 
+// Dibuja el escenario del nivel 2
+void dibujarEscenarioNivel2()
+{
+    // Código para dibujar el escenario del nivel 2
+}
+
+// Dibuja el escenario del nivel 3
+void dibujarEscenarioNivel3()
+{
+    // Código para dibujar el escenario del nivel 3
+}
 
 // Dibuja un coche en la posición especificada
 void dibujarCoche(const Coche& coche)
@@ -133,13 +147,13 @@ void borrarCoche(const Coche& coche)
     dibujarCoche(cocheBorrado);
 }
 
-// Redibuja las líneas blancas horizontales en las líneas 21 y 28
+// Redibuja las líneas blancas horizontales
 void redibujarLineas()
 {
     color(15); // Color blanco
     for (int j = 0; j < 150; j += 6) // Incrementa en 6 para tener 4 cubos y 2 de separación
     {
-        for (int k = 0; k < 4; k++) // Dibuja 5 cubos
+        for (int k = 0; k < 4; k++) // Dibuja 4 cubos
         {
             gotoxy(j + k, 21);
             cout << CUBO;
@@ -149,7 +163,7 @@ void redibujarLineas()
     }
 }
 
-// Funciones de lógica del juego
+// FUNCIONES DE LA LOGICA DEL JUEGO
 
 // Mueve un coche según la entrada del usuario
 void moverCoche(Coche& coche)
@@ -157,23 +171,23 @@ void moverCoche(Coche& coche)
     if (_kbhit())
     {
         char tecla = _getch();
-        if (tecla == 27) exit(0);
-        else if (tecla == 72)
+        if (tecla == 27) exit(0); // Si se presiona la tecla ESCAPE, salir del juego
+        else if (tecla == 72) // Flecha arriba
         {
             coche.dx = 0;
             coche.dy = -1;
         }
-        else if (tecla == 80)
+        else if (tecla == 80) // Flecha abajo
         {
             coche.dx = 0;
             coche.dy = 1;
         }
-        else if (tecla == 77)
+        else if (tecla == 77) // Flecha derecha
         {
             coche.dx = 1;
             coche.dy = 0;
         }
-        else if (tecla == 75)
+        else if (tecla == 75) // Flecha izquierda
         {
             coche.dx = -1;
             coche.dy = 0;
@@ -268,28 +282,58 @@ void mostrarMensajeGanaste()
     while (_getch() != 13); // Espera a que el usuario presione Enter (código ASCII 13)
 }
 
-// Función principal del juego
+// FUNCION PRINCIPAL DEL JUEGO
 
-void juego(int nivel); // Forward declaration
+void juego(int nivel);
 
-void jugarNivel(int nivel, int colorFondo, int tiempoNivel, int siguienteNivel)
+void inicializarCochesEnemigos()
+{
+    int posicionesY[NUM_ENEMY_CARS] = {15, 23, 30};
+    for (int i = 0; i < NUM_ENEMY_CARS; ++i)
+    {
+        int centroX = 150 - 10;
+        int velocidad = rand() % 3 + 1; // Random speed between 1 and 3
+        cochesEnemigos[i] = {centroX, posicionesY[i], -1, 0, COLOR_COCHE_ENEMIGO, velocidad};
+    }
+}
+
+// Juega un nivel del juego
+void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel)
 {
     mostrarMensajeNivel(nivel);
 
     system("cls");
 
-    // Inicializa los coches
+    // Initialize the main car
     int centroY = 15 + (35 - 15) / 2 - 2;
     Coche cochePrincipal = {0, centroY, 0, 0, COLOR_COCHE_PRINCIPAL, 1};
-    int centroX = 150 - 10;
-    Coche cocheEnemigo = {centroX, centroY, -1, 0, COLOR_COCHE_ENEMIGO, 1};
+
+    // Initialize the enemy cars
+    inicializarCochesEnemigos();
 
     int vidas = 3;
 
     ocultarCursor();
-    dibujarEscenario(colorFondo);
+
+    // Call the appropriate level drawing function
+    switch (nivel)
+    {
+    case 1:
+        dibujarEscenarioNivel1();
+        break;
+    case 2:
+        dibujarEscenarioNivel2();
+        break;
+    case 3:
+        dibujarEscenarioNivel3();
+        break;
+    }
+
     dibujarCoche(cochePrincipal);
-    dibujarCoche(cocheEnemigo);
+    for (int i = 0; i < NUM_ENEMY_CARS; ++i)
+    {
+        dibujarCoche(cochesEnemigos[i]);
+    }
 
     bool juegoActivo = true;
 
@@ -309,67 +353,94 @@ void jugarNivel(int nivel, int colorFondo, int tiempoNivel, int siguienteNivel)
         if (segundosTranscurridos >= tiempoNivel)
         {
             juegoActivo = false;
-            mostrarMensajeGanaste();
-            if (siguienteNivel != 0)
+            if (nivel == 3)
             {
-                juego(siguienteNivel);
+                mostrarMensajeGanasteElJuego();
+            }
+            else
+            {
+                mostrarMensajeGanaste();
+                if (siguienteNivel != 0)
+                {
+                    juego(siguienteNivel);
+                }
             }
             return;
         }
 
         moverCoche(cochePrincipal);
-        borrarCoche(cocheEnemigo);
-        cocheEnemigo.x += cocheEnemigo.dx * cocheEnemigo.velocidad;
-        if (cocheEnemigo.x < 0) cocheEnemigo.x = 140;
-
-        if (cochePrincipal.x < cocheEnemigo.x + 10 &&
-            cochePrincipal.x + 10 > cocheEnemigo.x &&
-            cochePrincipal.y < cocheEnemigo.y + 5 &&
-            cochePrincipal.y + 5 > cocheEnemigo.y)
+        for (int i = 0; i < NUM_ENEMY_CARS; ++i)
         {
-            borrarCoche(cochePrincipal);
-            dibujarX(cochePrincipal.x, cochePrincipal.y);
-            vidas--;
-            gotoxy(160, 7);
-            cout << "Colision! Vidas restantes: " << vidas;
-            Sleep(2000);
-
-            borrarCoche({cochePrincipal.x, cochePrincipal.y, 0, 0, 0, 1});
-
-            if (vidas == 0)
+            borrarCoche(cochesEnemigos[i]);
+            cochesEnemigos[i].x += cochesEnemigos[i].dx * cochesEnemigos[i].velocidad;
+            if (cochesEnemigos[i].x < 0)
             {
-                juegoActivo = false;
-                mostrarMensajePerdio();
-                return;
+                cochesEnemigos[i].x = 140;
+                cochesEnemigos[i].velocidad = rand() % 3 + 1; // Reassign random speed
             }
-            else
+
+            if (cochePrincipal.x < cochesEnemigos[i].x + 10 &&
+                cochePrincipal.x + 10 > cochesEnemigos[i].x &&
+                cochePrincipal.y < cochesEnemigos[i].y + 5 &&
+                cochePrincipal.y + 5 > cochesEnemigos[i].y)
             {
-                cochePrincipal.x = 0;
-                cochePrincipal.y = centroY;
-                cocheEnemigo.x = centroX;
-                cocheEnemigo.y = centroY;
+                borrarCoche(cochePrincipal);
+                borrarCoche(cochesEnemigos[i]);
+                dibujarX(cochePrincipal.x, cochePrincipal.y);
+                vidas--;
+                gotoxy(160, 7);
+                cout << "Colision! Vidas restantes: " << vidas;
+                Sleep(2000);
+
+                if (vidas == 0)
+                {
+                    juegoActivo = false;
+                    mostrarMensajePerdio();
+                    return;
+                }
+                else
+                {
+                    cochePrincipal.x = 0;
+                    cochePrincipal.y = centroY;
+                    cochesEnemigos[i].x = 150 - 10;
+                    cochesEnemigos[i].y = (i == 0) ? 15 : (i == 1) ? 23 : 30;
+                    cochesEnemigos[i].velocidad = rand() % 3 + 1; // Reassign random speed
+
+                    // Redraw the lines and the black track to clear the "X"
+                    color(0); // Black color for the track
+                    for (int j = 15; j < 35; j++)
+                    {
+                        gotoxy(0, j);
+                        for (int k = 0; k < 150; k++)
+                        {
+                            cout << " ";
+                        }
+                    }
+                    redibujarLineas();
+                }
             }
+
+            dibujarCoche(cochesEnemigos[i]);
         }
 
         dibujarCoche(cochePrincipal);
-        dibujarCoche(cocheEnemigo);
-        Sleep(30);
+        Sleep(20);
     }
 }
 
 void nivel1()
 {
-    jugarNivel(1, COLOR_FONDO, 30, 2);
+    jugarNivel(1, 30, 2);
 }
 
 void nivel2()
 {
-    jugarNivel(2, COLOR_FONDO_NIVEL2, 30, 3);
+    jugarNivel(2, 30, 3);
 }
 
 void nivel3()
 {
-    jugarNivel(3, COLOR_FONDO_NIVEL3, 30, 0);
+    jugarNivel(3, 30, 0);
 }
 
 void juego(int nivel)
@@ -390,7 +461,7 @@ void juego(int nivel)
     }
 }
 
-// Funciones de interfaz
+// FUNCIONES DE LA INTERFAZ
 
 // Muestra las instrucciones del juego
 void instrucciones()
@@ -542,6 +613,7 @@ void mostrarMensajeBienvenida()
 // Función principal
 int main()
 {
+    srand(time(0)); // Inicializa la semilla de números aleatorios
     mostrarMensajeBienvenida();
     ocultarCursor();
     while (true)
