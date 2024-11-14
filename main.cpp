@@ -17,7 +17,8 @@ const int COLOR_COCHE_PRINCIPAL = 10;
 const int COLOR_COCHE_ENEMIGO = 12;
 const int ANCHO = 100;
 const int ALTO = 40;
-const int NUM_ENEMY_CARS = 3;
+const int NUM_ENEMY_CARS = 9;
+int vidas = 3;
 
 // Estructura para los coches
 struct Coche
@@ -284,21 +285,21 @@ void mostrarMensajeGanaste()
 
 // FUNCION PRINCIPAL DEL JUEGO
 
-void juego(int nivel);
+void juego(int nivel, int& vidas);
 
-void inicializarCochesEnemigos()
+void inicializarCochesEnemigos(int numCoches)
 {
-    int posicionesY[NUM_ENEMY_CARS] = {15, 23, 30};
-    for (int i = 0; i < NUM_ENEMY_CARS; ++i)
+    int posicionesY[9] = {15, 23, 30, 15, 23, 30, 15, 23, 30};
+    for (int i = 0; i < numCoches; ++i)
     {
-        int centroX = 150 - 10;
+        int centroX = rand() % 50 + 100; // Random position between 100 and 150
         int velocidad = rand() % 3 + 1; // Random speed between 1 and 3
         cochesEnemigos[i] = {centroX, posicionesY[i], -1, 0, COLOR_COCHE_ENEMIGO, velocidad};
     }
 }
 
 // Juega un nivel del juego
-void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel)
+void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 {
     mostrarMensajeNivel(nivel);
 
@@ -308,10 +309,11 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel)
     int centroY = 15 + (35 - 15) / 2 - 2;
     Coche cochePrincipal = {0, centroY, 0, 0, COLOR_COCHE_PRINCIPAL, 1};
 
-    // Initialize the enemy cars
-    inicializarCochesEnemigos();
+    // Determine the number of enemy cars based on the level
+    int numCochesEnemigos = nivel * 3;
 
-    int vidas = 3;
+    // Initialize the enemy cars
+    inicializarCochesEnemigos(numCochesEnemigos);
 
     ocultarCursor();
 
@@ -330,7 +332,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel)
     }
 
     dibujarCoche(cochePrincipal);
-    for (int i = 0; i < NUM_ENEMY_CARS; ++i)
+    for (int i = 0; i < numCochesEnemigos; ++i)
     {
         dibujarCoche(cochesEnemigos[i]);
     }
@@ -362,14 +364,14 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel)
                 mostrarMensajeGanaste();
                 if (siguienteNivel != 0)
                 {
-                    juego(siguienteNivel);
+                    juego(siguienteNivel, vidas);
                 }
             }
             return;
         }
 
         moverCoche(cochePrincipal);
-        for (int i = 0; i < NUM_ENEMY_CARS; ++i)
+        for (int i = 0; i < numCochesEnemigos; ++i)
         {
             borrarCoche(cochesEnemigos[i]);
             cochesEnemigos[i].x += cochesEnemigos[i].dx * cochesEnemigos[i].velocidad;
@@ -377,6 +379,20 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel)
             {
                 cochesEnemigos[i].x = 140;
                 cochesEnemigos[i].velocidad = rand() % 3 + 1; // Reassign random speed
+            }
+
+            // Check for collisions between enemy cars
+            for (int j = 0; j < numCochesEnemigos; ++j)
+            {
+                if (i != j &&
+                    cochesEnemigos[i].x < cochesEnemigos[j].x + 10 &&
+                    cochesEnemigos[i].x + 10 > cochesEnemigos[j].x &&
+                    cochesEnemigos[i].y < cochesEnemigos[j].y + 5 &&
+                    cochesEnemigos[i].y + 5 > cochesEnemigos[j].y)
+                {
+                    // Adjust position to avoid collision
+                    cochesEnemigos[i].x = cochesEnemigos[j].x + 20;
+                }
             }
 
             if (cochePrincipal.x < cochesEnemigos[i].x + 10 &&
@@ -405,18 +421,6 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel)
                     cochesEnemigos[i].x = 150 - 10;
                     cochesEnemigos[i].y = (i == 0) ? 15 : (i == 1) ? 23 : 30;
                     cochesEnemigos[i].velocidad = rand() % 3 + 1; // Reassign random speed
-
-                    // Redraw the lines and the black track to clear the "X"
-                    color(0); // Black color for the track
-                    for (int j = 15; j < 35; j++)
-                    {
-                        gotoxy(0, j);
-                        for (int k = 0; k < 150; k++)
-                        {
-                            cout << " ";
-                        }
-                    }
-                    redibujarLineas();
                 }
             }
 
@@ -428,33 +432,34 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel)
     }
 }
 
-void nivel1()
+
+void nivel1(int& vidas)
 {
-    jugarNivel(1, 30, 2);
+    jugarNivel(1, 30, 2, vidas);
 }
 
-void nivel2()
+void nivel2(int& vidas)
 {
-    jugarNivel(2, 30, 3);
+    jugarNivel(2, 30, 3, vidas);
 }
 
-void nivel3()
+void nivel3(int& vidas)
 {
-    jugarNivel(3, 30, 0);
+    jugarNivel(3, 30, 0, vidas);
 }
 
-void juego(int nivel)
+void juego(int nivel, int& vidas)
 {
     switch (nivel)
     {
     case 1:
-        nivel1();
+        nivel1(vidas);
         break;
     case 2:
-        nivel2();
+        nivel2(vidas);
         break;
     case 3:
-        nivel3();
+        nivel3(vidas);
         break;
     default:
         break;
@@ -613,7 +618,7 @@ void mostrarMensajeBienvenida()
 // Función principal
 int main()
 {
-    srand(time(0)); // Inicializa la semilla de números aleatorios
+    srand(time(0)); // Initialize random seed
     mostrarMensajeBienvenida();
     ocultarCursor();
     while (true)
@@ -631,7 +636,8 @@ int main()
         switch (tecla)
         {
         case '1':
-            juego(1);
+            vidas = 3; // Reinicializar vidas
+            juego(1, vidas);
             break;
         case '2':
             instrucciones();
