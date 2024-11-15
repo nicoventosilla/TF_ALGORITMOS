@@ -291,7 +291,7 @@ void mostrarMensajeGanaste()
 void inicializarCochesEnemigos(int numCoches, int nivel)
 {
     int posicionesY[9] = {15, 23, 30, 15, 23, 30, 15, 23, 30};
-    int coloresPermitidos[] = {1, 2, 4, 5, 6, 8, 12, 13, 14}; // Colores permitidos
+    int coloresPermitidos[] = {1, 4, 5, 6, 8, 12, 13, 14}; // Colores permitidos
     int numColoresPermitidos = sizeof(coloresPermitidos) / sizeof(coloresPermitidos[0]);
 
     for (int i = 0; i < numCoches; ++i)
@@ -349,7 +349,8 @@ void inicializarCocheAliado(CocheAliado& cocheAliado, int tipo)
     cocheAliado.y = carriles[generarAleatorio(0, 2)]; // Aparece en una de las tres líneas específicas
     cocheAliado.dx = -1; // Moverse de derecha a izquierda
     cocheAliado.dy = 0;
-    cocheAliado.color = (tipo == 1) ? 15 : 11; // Color blanco para reparación, azul para escudo
+    cocheAliado.color = (tipo == 1) ? 15 : (tipo == 2) ? 11 : 10;
+    // Color blanco para reparación, azul para escudo, verde para velocidad
     cocheAliado.tipo = tipo;
     cocheAliado.activo = false; // Inicialmente inactivo
 }
@@ -357,7 +358,8 @@ void inicializarCocheAliado(CocheAliado& cocheAliado, int tipo)
 
 // Función para mover y verificar colisiones con el coche principal y coches enemigos
 void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vidas, Coche cochesEnemigos[],
-                      int numCochesEnemigos, bool& escudoActivo, time_t& tiempoEscudo)
+                      int numCochesEnemigos, bool& escudoActivo, time_t& tiempoEscudo, bool& velocidadActiva,
+                      time_t& tiempoVelocidad)
 {
     if (!cocheAliado.activo) return;
 
@@ -366,29 +368,34 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
 
     if (cocheAliado.x < 0)
     {
-        cocheAliado.activo = false; // Desactivar el coche aliado si sale de la pantalla
+        cocheAliado.activo = false;
     }
 
-    // Verificar colisión con el coche principal
     if (cochePrincipal.x < cocheAliado.x + 10 &&
         cochePrincipal.x + 10 > cocheAliado.x &&
         cochePrincipal.y < cocheAliado.y + 5 &&
         cochePrincipal.y + 5 > cocheAliado.y)
     {
-        if (cocheAliado.tipo == 1) // Coche de Reparación
+        if (cocheAliado.tipo == 1)
         {
             vidas++;
-            cocheAliado.activo = false; // Desactivar el coche aliado después de la colisión
+            cocheAliado.activo = false;
         }
-        else if (cocheAliado.tipo == 2) // Coche de Escudo
+        else if (cocheAliado.tipo == 2)
         {
             escudoActivo = true;
-            tiempoEscudo = time(0); // Registrar el tiempo de activación del escudo
-            cocheAliado.activo = false; // Desactivar el coche aliado después de la colisión
+            tiempoEscudo = time(0);
+            cocheAliado.activo = false;
+        }
+        else if (cocheAliado.tipo == 3)
+        {
+            velocidadActiva = true;
+            tiempoVelocidad = time(0);
+            cochePrincipal.velocidad = 2;
+            cocheAliado.activo = false;
         }
     }
 
-    // Verificar colisión con coches enemigos
     for (int i = 0; i < numCochesEnemigos; ++i)
     {
         if (cochesEnemigos[i].x < cocheAliado.x + 12 &&
@@ -396,9 +403,7 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
             cochesEnemigos[i].y < cocheAliado.y + 5 &&
             cochesEnemigos[i].y + 5 > cocheAliado.y)
         {
-            // Borrar el coche enemigo antes de moverlo
             borrarCoche(cochesEnemigos[i]);
-            // Retroceder el coche enemigo unos espacios a la derecha para evitar la colisión
             cochesEnemigos[i].x += 20;
         }
     }
@@ -434,9 +439,16 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     CocheAliado cocheEscudo;
     inicializarCocheAliado(cocheEscudo, 2);
 
+    CocheAliado cocheVelocidad;
+    inicializarCocheAliado(cocheVelocidad, 3);
+
     bool escudoActivo = false;
     time_t tiempoEscudo = 0;
     int tiempoRestanteEscudo = 0;
+
+    bool velocidadActiva = false;
+    time_t tiempoVelocidad = 0;
+    int tiempoRestanteVelocidad = 0;
 
     switch (nivel)
     {
@@ -460,9 +472,8 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     bool juegoActivo = true;
     time_t tiempoInicio = time(0);
     int tiempoAparicionReparacion = generarAleatorio(0, 20);
-    // Momento aleatorio para la aparición del coche de reparación en los primeros 20 segundos
-    int tiempoAparicionEscudo = generarAleatorio(0, 15);
-    // Momento aleatorio para la aparición del coche de escudo en los primeros 15 segundos
+    int tiempoAparicionEscudo = generarAleatorio(0, 20);
+    int tiempoAparicionVelocidad = generarAleatorio(0, 20);
 
     while (juegoActivo)
     {
@@ -473,7 +484,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         time_t tiempoActual = time(0);
         int segundosTranscurridos = difftime(tiempoActual, tiempoInicio);
         gotoxy(160, 3);
-        cout << "Tiempo: " << segundosTranscurridos << "s";
+        cout << "Tiempo: " << segundosTranscurridos << " s ";
 
         if (segundosTranscurridos >= tiempoNivel)
         {
@@ -495,12 +506,17 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
         if (segundosTranscurridos == tiempoAparicionReparacion)
         {
-            cocheReparacion.activo = true; // Activar el coche de reparación en el momento aleatorio
+            cocheReparacion.activo = true;
         }
 
         if (segundosTranscurridos == tiempoAparicionEscudo)
         {
-            cocheEscudo.activo = true; // Activar el coche de escudo en el momento aleatorio
+            cocheEscudo.activo = true;
+        }
+
+        if (segundosTranscurridos == tiempoAparicionVelocidad)
+        {
+            cocheVelocidad.activo = true;
         }
 
         if (escudoActivo)
@@ -511,20 +527,40 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 escudoActivo = false;
                 tiempoRestanteEscudo = 0;
                 gotoxy(160, 9);
-                cout << "                "; // Borrar el contador del escudo
+                cout << "                ";
             }
             else
             {
                 gotoxy(160, 9);
-                cout << "Escudo: " << tiempoRestanteEscudo << " s   ";
+                cout << "Escudo: " << tiempoRestanteEscudo << " s ";
+            }
+        }
+
+        if (velocidadActiva)
+        {
+            tiempoRestanteVelocidad = 10 - difftime(tiempoActual, tiempoVelocidad);
+            if (tiempoRestanteVelocidad <= 0)
+            {
+                velocidadActiva = false;
+                tiempoRestanteVelocidad = 0;
+                cochePrincipal.velocidad = 1;
+                gotoxy(160, 11);
+                cout << "                ";
+            }
+            else
+            {
+                gotoxy(160, 11);
+                cout << "Velocidad: " << tiempoRestanteVelocidad << " s ";
             }
         }
 
         moverCoche(cochePrincipal);
         moverCocheAliado(cocheReparacion, cochePrincipal, vidas, cochesEnemigos, numCochesEnemigos, escudoActivo,
-                         tiempoEscudo);
+                         tiempoEscudo, velocidadActiva, tiempoVelocidad);
         moverCocheAliado(cocheEscudo, cochePrincipal, vidas, cochesEnemigos, numCochesEnemigos, escudoActivo,
-                         tiempoEscudo);
+                         tiempoEscudo, velocidadActiva, tiempoVelocidad);
+        moverCocheAliado(cocheVelocidad, cochePrincipal, vidas, cochesEnemigos, numCochesEnemigos, escudoActivo,
+                         tiempoEscudo, velocidadActiva, tiempoVelocidad);
 
         for (int i = 0; i < numCochesEnemigos; ++i)
         {
@@ -533,14 +569,12 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             if (cochesEnemigos[i].x < 0)
             {
                 cochesEnemigos[i].x = 140;
-                cochesEnemigos[i].velocidad = generarAleatorio(1, 3); // Asignar una nueva velocidad aleatoria
-                int coloresPermitidos[] = {1, 2, 4, 5, 6, 8, 12, 13, 14}; // Colores permitidos
+                cochesEnemigos[i].velocidad = generarAleatorio(1, 3);
+                int coloresPermitidos[] = {1, 4, 5, 6, 8, 12, 13, 14};
                 int numColoresPermitidos = sizeof(coloresPermitidos) / sizeof(coloresPermitidos[0]);
                 cochesEnemigos[i].color = coloresPermitidos[generarAleatorio(0, numColoresPermitidos - 1)];
-                // Asignar un nuevo color permitido
             }
 
-            // Verificar colisión con otros coches enemigos
             for (int j = 0; j < numCochesEnemigos; ++j)
             {
                 if (i != j &&
@@ -566,6 +600,10 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 cout << "Colision! Vidas restantes: " << vidas;
                 Sleep(1000);
 
+                // Borrar el mensaje de colisión después de 2 segundos
+                gotoxy(160, 7);
+                cout << "                            ";
+
                 if (vidas == 0)
                 {
                     juegoActivo = false;
@@ -578,7 +616,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                     cochePrincipal.y = centroY;
                     cochesEnemigos[i].x = 150 - 10;
                     cochesEnemigos[i].y = (i == 0) ? 15 : (i == 1) ? 23 : 30;
-                    cochesEnemigos[i].velocidad = generarAleatorio(1, 3); // Asignar una nueva velocidad aleatoria
+                    cochesEnemigos[i].velocidad = generarAleatorio(1, 3);
                 }
             }
 
