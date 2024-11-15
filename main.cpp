@@ -288,10 +288,6 @@ void mostrarMensajeGanaste()
     while (_getch() != 13); // Espera a que el usuario presione Enter (código ASCII 13)
 }
 
-// FUNCION PRINCIPAL DEL JUEGO
-
-void juego(int nivel, int& vidas);
-
 void inicializarCochesEnemigos(int numCoches, int nivel)
 {
     int posicionesY[9] = {15, 23, 30, 15, 23, 30, 15, 23, 30};
@@ -303,10 +299,114 @@ void inicializarCochesEnemigos(int numCoches, int nivel)
         {
             velocidad += 1; // Incrementar la velocidad en 1
         }
-        int colorAleatorio = generarAleatorio(1, 15);
+
+        int colorAleatorio;
+        do
+        {
+            colorAleatorio = generarAleatorio(1, 15);
+        }
+        while (colorAleatorio == 10 || colorAleatorio == 11 || colorAleatorio == 15 || colorAleatorio == 7 ||
+            colorAleatorio == 3 || colorAleatorio == 9);
+
         cochesEnemigos[i] = {centroX, posicionesY[i], -1, 0, colorAleatorio, velocidad};
     }
 }
+
+// Estructura para los coches aliados
+struct CocheAliado
+{
+    int x, y; // Posición del coche
+    int dx, dy; // Dirección del movimiento
+    int color; // Color del coche
+    int tipo; // Tipo de aliado (1: Reparación)
+    bool activo; // Indica si el coche aliado está activo
+};
+
+// Función para dibujar un coche aliado
+void dibujarCocheAliado(const CocheAliado& coche)
+{
+    color(coche.color);
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            gotoxy(coche.x + j, coche.y + i);
+            cout << CUBO;
+        }
+    }
+}
+
+// Función para borrar un coche aliado
+void borrarCocheAliado(const CocheAliado& coche)
+{
+    CocheAliado cocheBorrado = coche;
+    cocheBorrado.color = 0;
+    dibujarCocheAliado(cocheBorrado);
+}
+
+// Función para inicializar los coches aliados
+void inicializarCocheAliado(CocheAliado& cocheAliado, int tipo)
+{
+    cocheAliado.x = 140; // Aparece en el extremo derecho
+    int carriles[] = {16, 22, 29};
+    cocheAliado.y = carriles[generarAleatorio(0, 2)]; // Aparece en una de las tres líneas específicas
+    cocheAliado.dx = -1; // Moverse de derecha a izquierda
+    cocheAliado.dy = 0;
+    cocheAliado.color = 15; // Color blanco para el coche de reparación
+    cocheAliado.tipo = tipo;
+    cocheAliado.activo = false; // Inicialmente inactivo
+}
+
+// Función para mover y verificar colisiones con el coche principal y coches enemigos
+void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vidas, Coche cochesEnemigos[], int numCochesEnemigos)
+{
+    if (!cocheAliado.activo) return;
+
+    borrarCocheAliado(cocheAliado);
+    cocheAliado.x += cocheAliado.dx;
+
+    if (cocheAliado.x < 0)
+    {
+        cocheAliado.activo = false; // Desactivar el coche aliado si sale de la pantalla
+    }
+
+    // Verificar colisión con el coche principal
+    if (cochePrincipal.x < cocheAliado.x + 10 &&
+        cochePrincipal.x + 10 > cocheAliado.x &&
+        cochePrincipal.y < cocheAliado.y + 5 &&
+        cochePrincipal.y + 5 > cocheAliado.y)
+    {
+        if (cocheAliado.tipo == 1) // Coche de Reparación
+        {
+            vidas++;
+            cocheAliado.activo = false; // Desactivar el coche aliado después de la colisión
+        }
+    }
+
+    // Verificar colisión con coches enemigos
+    for (int i = 0; i < numCochesEnemigos; ++i)
+    {
+        if (cochesEnemigos[i].x < cocheAliado.x + 12 &&
+            cochesEnemigos[i].x + 12 > cocheAliado.x &&
+            cochesEnemigos[i].y < cocheAliado.y + 5 &&
+            cochesEnemigos[i].y + 5 > cocheAliado.y)
+        {
+            // Borrar el coche enemigo antes de moverlo
+            borrarCoche(cochesEnemigos[i]);
+            // Retroceder el coche enemigo unos espacios a la derecha para evitar la colisión
+            cochesEnemigos[i].x += 20;
+        }
+    }
+
+    if (cocheAliado.activo)
+    {
+        dibujarCocheAliado(cocheAliado);
+    }
+}
+
+// FUNCION PRINCIPAL DEL JUEGO
+
+void juego(int nivel, int& vidas);
 
 // Juega un nivel del juego
 void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
@@ -315,13 +415,16 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
     system("cls");
 
+    ocultarCursor();
+
     int centroY = 15 + (35 - 15) / 2 - 2;
     Coche cochePrincipal = {0, centroY, 0, 0, COLOR_COCHE_PRINCIPAL, 1};
 
     int numCochesEnemigos = nivel * 3;
     inicializarCochesEnemigos(numCochesEnemigos, nivel);
 
-    ocultarCursor();
+    CocheAliado cocheReparacion;
+    inicializarCocheAliado(cocheReparacion, 1);
 
     switch (nivel)
     {
@@ -344,6 +447,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
     bool juegoActivo = true;
     time_t tiempoInicio = time(0);
+    int tiempoAparicionReparacion = generarAleatorio(0, 15); // Momento aleatorio para la aparición del coche de reparación en los primeros 15 segundos
 
     while (juegoActivo)
     {
@@ -374,7 +478,14 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             return;
         }
 
+        if (segundosTranscurridos == tiempoAparicionReparacion)
+        {
+            cocheReparacion.activo = true; // Activar el coche de reparación en el momento aleatorio
+        }
+
         moverCoche(cochePrincipal);
+        moverCocheAliado(cocheReparacion, cochePrincipal, vidas, cochesEnemigos, numCochesEnemigos);
+
         for (int i = 0; i < numCochesEnemigos; ++i)
         {
             borrarCoche(cochesEnemigos[i]);
@@ -386,6 +497,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 cochesEnemigos[i].color = generarAleatorio(1, 15); // Asignar un nuevo color aleatorio
             }
 
+            // Verificar colisión con otros coches enemigos
             for (int j = 0; j < numCochesEnemigos; ++j)
             {
                 if (i != j &&
@@ -394,7 +506,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                     cochesEnemigos[i].y < cochesEnemigos[j].y + 5 &&
                     cochesEnemigos[i].y + 5 > cochesEnemigos[j].y)
                 {
-                    cochesEnemigos[i].x = cochesEnemigos[j].x + 20;
+                    cochesEnemigos[i].x = cochesEnemigos[j].x + 25;
                 }
             }
 
@@ -431,7 +543,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         }
 
         dibujarCoche(cochePrincipal);
-        Sleep(30);
+        Sleep(20);
     }
 }
 
