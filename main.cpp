@@ -437,7 +437,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     Coche cochePrincipal = {0, centroY, 0, 0, COLOR_COCHE_PRINCIPAL, 1};
 
     // Inicializar los coches enemigos
-    int numCochesEnemigos = nivel * 3;
+    int numCochesEnemigos = 3 + (nivel - 1) * 2;
     inicializarCochesEnemigos(numCochesEnemigos, nivel);
 
     // Inicializar los coches aliados
@@ -484,9 +484,9 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     // Variables para controlar el flujo del juego
     bool juegoActivo = true; // Indica si el juego está activo
     time_t tiempoInicio = time(0); // Tiempo de inicio del juego
-    int tiempoAparicionReparacion = generarAleatorio(0, 20); // Tiempo de aparición del coche de reparación
-    int tiempoAparicionEscudo = generarAleatorio(0, 20); // Tiempo de aparición del coche de escudo
-    int tiempoAparicionVelocidad = generarAleatorio(0, 20); // Tiempo de aparición del coche de velocidad
+    int tiempoAparicionReparacion = generarAleatorio(0, 16); // Tiempo de aparición del coche de reparación
+    int tiempoAparicionEscudo = generarAleatorio(0, 13); // Tiempo de aparición del coche de escudo
+    int tiempoAparicionVelocidad = generarAleatorio(0, 19); // Tiempo de aparición del coche de velocidad
 
     // Bucle principal del juego
     while (juegoActivo)
@@ -498,12 +498,12 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
         // Mostrar el tiempo transcurrido
         time_t tiempoActual = time(0);
-        int segundosTranscurridos = difftime(tiempoActual, tiempoInicio);
+        int tiempoRestante = tiempoNivel - difftime(tiempoActual, tiempoInicio);
         gotoxy(160, 3);
-        cout << "Tiempo: " << segundosTranscurridos << " s ";
+        cout << "Tiempo: " << tiempoRestante << " s ";
 
-        // Verificar si se ha superado el tiempo del nivel
-        if (segundosTranscurridos >= tiempoNivel)
+        // Verificar si se ha agotado el tiempo del nivel
+        if (tiempoRestante <= 0)
         {
             juegoActivo = false;
             if (nivel == 3)
@@ -522,17 +522,17 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         }
 
         // Verificar si es el momento de activar los coches aliados
-        if (segundosTranscurridos == tiempoAparicionReparacion)
+        if (tiempoRestante == tiempoNivel - tiempoAparicionReparacion)
         {
             cocheReparacion.activo = true;
         }
 
-        if (segundosTranscurridos == tiempoAparicionEscudo)
+        if (tiempoRestante == tiempoNivel - tiempoAparicionEscudo)
         {
             cocheEscudo.activo = true;
         }
 
-        if (segundosTranscurridos == tiempoAparicionVelocidad)
+        if (tiempoRestante == tiempoNivel - tiempoAparicionVelocidad)
         {
             cocheVelocidad.activo = true;
         }
