@@ -300,10 +300,10 @@ void inicializarCochesEnemigos(int numCoches, int nivel)
     {
         int centroX = generarAleatorio(60, 150); // Posición X aleatoria
         int velocidad = generarAleatorio(1, 3); // Velocidad aleatoria
-        // if (nivel >= 2 && centroX < 75) // Incrementar la velocidad para coches en la izquierda a partir del nivel 2
-        // {
-        //     velocidad += 1; // Incrementar la velocidad en 1
-        // }
+        if (nivel >= 2 && centroX < 85) // Incrementar la velocidad para coches en la izquierda a partir del nivel 2
+        {
+            velocidad += 1; // Incrementar la velocidad en 1
+        }
 
         int colorAleatorio = coloresPermitidos[generarAleatorio(0, numColoresPermitidos - 1)]; // Color aleatorio
 
@@ -409,7 +409,7 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
             cochesEnemigos[i].y + 5 > cocheAliado.y)
         {
             borrarCoche(cochesEnemigos[i]);
-            cochesEnemigos[i].x += 15;
+            cochesEnemigos[i].x += 10;
         }
     }
 
@@ -581,7 +581,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         moverCocheAliado(cocheEscudo, cochePrincipal, vidas, cochesEnemigos, numCochesEnemigos, escudoActivo,
                          tiempoEscudo, velocidadActiva, tiempoVelocidad);
         moverCocheAliado(cocheVelocidad, cochePrincipal, vidas, cochesEnemigos, numCochesEnemigos, escudoActivo,
-                         tiempoEscudo, velocidadActiva, tiempoVelocidad)
+                         tiempoEscudo, velocidadActiva, tiempoVelocidad);
 
         // Mover los coches enemigos
         for (int i = 0; i < numCochesEnemigos; ++i)
