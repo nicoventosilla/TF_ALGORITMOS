@@ -293,7 +293,7 @@ void mostrarMensajeGanaste()
 void inicializarCochesEnemigos(int numCoches, int nivel)
 {
     int posicionesY[9] = {15, 23, 30, 15, 23, 30, 15, 23, 30}; // Posiciones Y de los coches enemigos
-    int coloresPermitidos[] = {1, 4, 5, 6, 8, 12, 13, 14}; // Colores permitidos
+    int coloresPermitidos[] = {1, 4, 5, 8, 12, 13}; // Colores permitidos
     int numColoresPermitidos = sizeof(coloresPermitidos) / sizeof(coloresPermitidos[0]); // Número de colores permitidos
 
     for (int i = 0; i < numCoches; ++i)
@@ -403,8 +403,8 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
     // Verificar colisión con los coches enemigos
     for (int i = 0; i < numCochesEnemigos; ++i)
     {
-        if (cochesEnemigos[i].x < cocheAliado.x + 12 &&
-            cochesEnemigos[i].x + 12 > cocheAliado.x &&
+        if (cochesEnemigos[i].x < cocheAliado.x + 11 &&
+            cochesEnemigos[i].x + 11 > cocheAliado.x &&
             cochesEnemigos[i].y < cocheAliado.y + 5 &&
             cochesEnemigos[i].y + 5 > cocheAliado.y)
         {
@@ -418,6 +418,62 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
     {
         dibujarCocheAliado(cocheAliado);
     }
+}
+
+struct Cono
+{
+    int x, y; // Posición del cono
+    int color; // Color del cono
+    bool activo; // Indica si el cono está activo
+};
+
+void dibujarCono(const Cono& cono)
+{
+    if (!cono.activo) return;
+    color(cono.color);
+    gotoxy(cono.x, cono.y);
+    cout << "    " << CUBO << "    ";
+
+    color(15); // Color blanco
+    gotoxy(cono.x, cono.y + 1);
+    cout << "   " << CUBO << CUBO << CUBO << "   ";
+
+    color(cono.color);
+    gotoxy(cono.x, cono.y + 2);
+    cout << "  " << CUBO << CUBO << CUBO << CUBO << CUBO << "  ";
+
+    color(15); // Color blanco
+    gotoxy(cono.x, cono.y + 3);
+    cout << " " << CUBO << CUBO << CUBO << CUBO << CUBO << CUBO << CUBO << " ";
+
+    color(cono.color);
+    gotoxy(cono.x, cono.y + 4);
+    cout << CUBO << CUBO << CUBO << CUBO << CUBO << CUBO << CUBO << CUBO << CUBO;
+}
+
+void borrarCono(const Cono& cono)
+{
+    if (!cono.activo) return;
+    color(0); // Color negro (fondo)
+    gotoxy(cono.x, cono.y);
+    cout << "         ";
+    gotoxy(cono.x, cono.y + 1);
+    cout << "         ";
+    gotoxy(cono.x, cono.y + 2);
+    cout << "         ";
+    gotoxy(cono.x, cono.y + 3);
+    cout << "         ";
+    gotoxy(cono.x, cono.y + 4);
+    cout << "         ";
+}
+
+void inicializarCono(Cono& cono)
+{
+    int carriles[] = {16, 22, 29}; // Posiciones Y de los carriles
+    cono.x = generarAleatorio(70, 90); // Posición X aleatoria
+    cono.y = carriles[generarAleatorio(0, 2)]; // Aparece en una de las tres líneas específicas
+    cono.color = 14; // Color del cono
+    cono.activo = true; // Activar el cono
 }
 
 // FUNCION PRINCIPAL DEL JUEGO
@@ -449,6 +505,11 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
     CocheAliado cocheVelocidad;
     inicializarCocheAliado(cocheVelocidad, 3);
+
+    // Inicializar el cono
+    Cono cono = {0, 0, 0, false}; // Inicializar la variable cono
+    int tiempoAparicionCono = generarAleatorio(18, 25); // Tiempo de aparición del cono
+    int duracionCono = 5; // Duración del cono en segundos
 
     // Variables para controlar el tiempo de los coches aliados
     bool escudoActivo = false;
@@ -484,9 +545,9 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     // Variables para controlar el flujo del juego
     bool juegoActivo = true; // Indica si el juego está activo
     time_t tiempoInicio = time(0); // Tiempo de inicio del juego
-    int tiempoAparicionReparacion = generarAleatorio(0, 16); // Tiempo de aparición del coche de reparación
-    int tiempoAparicionEscudo = generarAleatorio(0, 13); // Tiempo de aparición del coche de escudo
-    int tiempoAparicionVelocidad = generarAleatorio(0, 19); // Tiempo de aparición del coche de velocidad
+    int tiempoAparicionReparacion = generarAleatorio(4, 9); // Tiempo de aparición del coche de reparación
+    int tiempoAparicionEscudo = generarAleatorio(0, 5); // Tiempo de aparición del coche de escudo
+    int tiempoAparicionVelocidad = generarAleatorio(9, 14); // Tiempo de aparición del coche de velocidad
 
     // Bucle principal del juego
     while (juegoActivo)
@@ -574,6 +635,53 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             }
         }
 
+        // Verificar si es el momento de activar el cono
+        if (!cono.activo && tiempoRestante == tiempoNivel - tiempoAparicionCono)
+        {
+            inicializarCono(cono);
+            dibujarCono(cono);
+        }
+
+        // Verificar si es el momento de desactivar el cono
+        if (cono.activo && tiempoRestante == tiempoNivel - tiempoAparicionCono - duracionCono)
+        {
+            borrarCono(cono);
+            cono.activo = false;
+        }
+
+        // Verificar colisión con el coche principal
+        // Verificar colisión con el coche principal
+        if (cono.activo && cochePrincipal.x < cono.x + 9 &&
+            cochePrincipal.x + 10 > cono.x &&
+            cochePrincipal.y < cono.y + 4 &&
+            cochePrincipal.y + 5 > cono.y)
+        {
+            borrarCoche(cochePrincipal); // Borrar el coche principal de su posición actual
+            dibujarX(cochePrincipal.x, cochePrincipal.y); // Dibujar una X en la posición del coche principal
+            vidas--; // Decrementar las vidas
+            gotoxy(160, 7);
+            cout << "Colision! Vidas restantes: " << vidas; // Mostrar un mensaje de colisión
+            Sleep(1000);
+
+            // Limpiar el mensaje de colisión
+            gotoxy(160, 7);
+            cout << "                            ";
+
+            // Verificar si el jugador ha perdido
+            if (vidas == 0)
+            {
+                juegoActivo = false;
+                mostrarMensajePerdio();
+                return;
+            }
+            else
+            {
+                // Reiniciar la posición del coche principal
+                cochePrincipal.x = 0;
+                cochePrincipal.y = centroY;
+            }
+        }
+
         // Mover los coches
         moverCoche(cochePrincipal);
         moverCocheAliado(cocheReparacion, cochePrincipal, vidas, cochesEnemigos, numCochesEnemigos, escudoActivo,
@@ -586,6 +694,16 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         // Mover los coches enemigos
         for (int i = 0; i < numCochesEnemigos; ++i)
         {
+            if (cono.activo && cochesEnemigos[i].x < cono.x + 10 &&
+                cochesEnemigos[i].x + 10 > cono.x &&
+                cochesEnemigos[i].y < cono.y + 5 &&
+                cochesEnemigos[i].y + 5 > cono.y)
+            {
+                borrarCoche(cochesEnemigos[i]); // Borrar el coche enemigo de su posición actual
+                cochesEnemigos[i].x += 10; // Retroceder 10 espacios a la derecha
+                dibujarCono(cono); // Redibujar el cono para asegurarse de que no se borre
+            }
+
             borrarCoche(cochesEnemigos[i]);
             cochesEnemigos[i].x += cochesEnemigos[i].dx * cochesEnemigos[i].velocidad;
 
@@ -594,7 +712,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             {
                 cochesEnemigos[i].x = 140;
                 cochesEnemigos[i].velocidad = generarAleatorio(1, 3);
-                int coloresPermitidos[] = {1, 4, 5, 6, 8, 12, 13, 14};
+                int coloresPermitidos[] = {1, 4, 5, 8, 12, 13}; // Colores permitidos
                 int numColoresPermitidos = sizeof(coloresPermitidos) / sizeof(coloresPermitidos[0]);
                 cochesEnemigos[i].color = coloresPermitidos[generarAleatorio(0, numColoresPermitidos - 1)];
             }
@@ -608,7 +726,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                     cochesEnemigos[i].y < cochesEnemigos[j].y + 5 &&
                     cochesEnemigos[i].y + 5 > cochesEnemigos[j].y)
                 {
-                    cochesEnemigos[i].x = cochesEnemigos[j].x + 20;
+                    cochesEnemigos[i].x = cochesEnemigos[j].x + 10;
                 }
             }
 
