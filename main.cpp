@@ -293,7 +293,7 @@ void mostrarMensajeGanaste()
 void inicializarCochesEnemigos(int numCoches, int nivel)
 {
     int posicionesY[9] = {15, 23, 30, 15, 23, 30, 15, 23, 30}; // Posiciones Y de los coches enemigos
-    int coloresPermitidos[] = {1, 4, 5, 8, 12, 13}; // Colores permitidos
+    int coloresPermitidos[] = {1, 4, 5, 12, 13}; // Colores permitidos
     int numColoresPermitidos = sizeof(coloresPermitidos) / sizeof(coloresPermitidos[0]); // Número de colores permitidos
 
     for (int i = 0; i < numCoches; ++i)
@@ -467,13 +467,83 @@ void borrarCono(const Cono& cono)
     cout << "         ";
 }
 
-void inicializarCono(Cono& cono)
+void inicializarCono(Cono& cono, int carrilOcupado = -1)
 {
     int carriles[] = {16, 22, 29}; // Posiciones Y de los carriles
+    int carril;
+    do
+    {
+        carril = generarAleatorio(0, 2);
+    }
+    while (carril == carrilOcupado); // Asegurarse de que no sea el mismo carril que la llanta
+
     cono.x = generarAleatorio(70, 90); // Posición X aleatoria
-    cono.y = carriles[generarAleatorio(0, 2)]; // Aparece en una de las tres líneas específicas
+    cono.y = carriles[carril]; // Aparece en uno de los carriles disponibles
     cono.color = 14; // Color del cono
     cono.activo = true; // Activar el cono
+}
+
+struct Llanta
+{
+    int x, y; // Posición de la llanta
+    int color; // Color de la llanta
+    bool activo; // Indica si la llanta está activa
+};
+
+void dibujarLlanta(const Llanta& llanta)
+{
+    if (!llanta.activo) return;
+    color(llanta.color);
+    gotoxy(llanta.x, llanta.y);
+    cout << "  " << CUBO << CUBO << "  ";
+
+    gotoxy(llanta.x, llanta.y + 1);
+    cout << " " << CUBO << CUBO << CUBO << CUBO << " ";
+
+    gotoxy(llanta.x, llanta.y + 2);
+    cout << CUBO << CUBO;
+    color(0); // Color negro
+    cout << CUBO << CUBO;
+    color(llanta.color);
+    cout << CUBO << CUBO;
+
+    gotoxy(llanta.x, llanta.y + 3);
+    cout << " " << CUBO << CUBO << CUBO << CUBO << " ";
+
+    gotoxy(llanta.x, llanta.y + 4);
+    cout << "  " << CUBO << CUBO << "  ";
+}
+
+void borrarLlanta(const Llanta& llanta)
+{
+    if (!llanta.activo) return;
+    color(0); // Color negro (fondo)
+    gotoxy(llanta.x, llanta.y);
+    cout << "      ";
+    gotoxy(llanta.x, llanta.y + 1);
+    cout << "      ";
+    gotoxy(llanta.x, llanta.y + 2);
+    cout << "      ";
+    gotoxy(llanta.x, llanta.y + 3);
+    cout << "      ";
+    gotoxy(llanta.x, llanta.y + 4);
+    cout << "      ";
+}
+
+void inicializarLlanta(Llanta& llanta, int carrilOcupado = -1)
+{
+    int carriles[] = {16, 22, 29}; // Posiciones Y de los carriles
+    int carril;
+    do
+    {
+        carril = generarAleatorio(0, 2);
+    }
+    while (carril == carrilOcupado); // Asegurarse de que no sea el mismo carril que el cono
+
+    llanta.x = generarAleatorio(70, 90); // Posición X aleatoria
+    llanta.y = carriles[carril]; // Aparece en uno de los carriles disponibles
+    llanta.color = 8; // Color de la llanta
+    llanta.activo = true; // Activar la llanta
 }
 
 // FUNCION PRINCIPAL DEL JUEGO
@@ -508,8 +578,13 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
     // Inicializar el cono
     Cono cono = {0, 0, 0, false}; // Inicializar la variable cono
-    int tiempoAparicionCono = generarAleatorio(18, 25); // Tiempo de aparición del cono
+    int tiempoAparicionCono = generarAleatorio(15, 20); // Tiempo de aparición del cono
     int duracionCono = 5; // Duración del cono en segundos
+
+    // Inicializar la llanta
+    Llanta llanta = {0, 0, 0, false}; // Inicializar la variable llanta
+    int tiempoAparicionLlanta = generarAleatorio(19, 24); // Tiempo de aparición de la llanta
+    int duracionLlanta = 5; // Duración de la llanta en segundos
 
     // Variables para controlar el tiempo de los coches aliados
     bool escudoActivo = false;
@@ -545,9 +620,9 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     // Variables para controlar el flujo del juego
     bool juegoActivo = true; // Indica si el juego está activo
     time_t tiempoInicio = time(0); // Tiempo de inicio del juego
-    int tiempoAparicionReparacion = generarAleatorio(4, 9); // Tiempo de aparición del coche de reparación
-    int tiempoAparicionEscudo = generarAleatorio(0, 5); // Tiempo de aparición del coche de escudo
-    int tiempoAparicionVelocidad = generarAleatorio(9, 14); // Tiempo de aparición del coche de velocidad
+    int tiempoAparicionReparacion = generarAleatorio(5, 9); // Tiempo de aparición del coche de reparación
+    int tiempoAparicionEscudo = generarAleatorio(0, 4); // Tiempo de aparición del coche de escudo
+    int tiempoAparicionVelocidad = generarAleatorio(9, 13); // Tiempo de aparición del coche de velocidad
 
     // Bucle principal del juego
     while (juegoActivo)
@@ -638,7 +713,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         // Verificar si es el momento de activar el cono
         if (!cono.activo && tiempoRestante == tiempoNivel - tiempoAparicionCono)
         {
-            inicializarCono(cono);
+            inicializarCono(cono, llanta.activo ? llanta.y : -1);
             dibujarCono(cono);
         }
 
@@ -649,7 +724,6 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             cono.activo = false;
         }
 
-        // Verificar colisión con el coche principal
         // Verificar colisión con el coche principal
         if (cono.activo && cochePrincipal.x < cono.x + 9 &&
             cochePrincipal.x + 10 > cono.x &&
@@ -682,6 +756,66 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             }
         }
 
+        // Verificar si es el momento de activar la llanta
+        if (!llanta.activo && tiempoRestante == tiempoNivel - tiempoAparicionLlanta)
+        {
+            inicializarLlanta(llanta, cono.activo ? cono.y : -1);
+            dibujarLlanta(llanta);
+        }
+
+        // Verificar si es el momento de desactivar la llanta
+        if (llanta.activo && tiempoRestante == tiempoNivel - tiempoAparicionLlanta - duracionLlanta)
+        {
+            borrarLlanta(llanta);
+            llanta.activo = false;
+        }
+
+        // Verificar colisión con el coche principal
+        if (llanta.activo && cochePrincipal.x < llanta.x + 6 &&
+            cochePrincipal.x + 10 > llanta.x &&
+            cochePrincipal.y < llanta.y + 4 &&
+            cochePrincipal.y + 5 > llanta.y)
+        {
+            borrarCoche(cochePrincipal); // Borrar el coche principal de su posición actual
+            dibujarX(cochePrincipal.x, cochePrincipal.y); // Dibujar una X en la posición del coche principal
+            vidas--; // Decrementar las vidas
+            gotoxy(160, 7);
+            cout << "Colision! Vidas restantes: " << vidas; // Mostrar un mensaje de colisión
+            Sleep(1000);
+
+            // Limpiar el mensaje de colisión
+            gotoxy(160, 7);
+            cout << "                            ";
+
+            // Verificar si el jugador ha perdido
+            if (vidas == 0)
+            {
+                juegoActivo = false;
+                mostrarMensajePerdio();
+                return;
+            }
+            else
+            {
+                // Reiniciar la posición del coche principal
+                cochePrincipal.x = 0;
+                cochePrincipal.y = centroY;
+            }
+        }
+
+        // Verificar colisión de la llanta con los coches enemigos
+        for (int i = 0; i < numCochesEnemigos; ++i)
+        {
+            if (llanta.activo && cochesEnemigos[i].x < llanta.x + 6 &&
+                cochesEnemigos[i].x + 10 > llanta.x &&
+                cochesEnemigos[i].y < llanta.y + 4 &&
+                cochesEnemigos[i].y + 5 > llanta.y)
+            {
+                borrarCoche(cochesEnemigos[i]); // Borrar el coche enemigo de su posición actual
+                cochesEnemigos[i].x += 10; // Retroceder 10 espacios a la derecha
+                dibujarLlanta(llanta); // Redibujar la llanta para asegurarse de que no se borre
+            }
+        }
+
         // Mover los coches
         moverCoche(cochePrincipal);
         moverCocheAliado(cocheReparacion, cochePrincipal, vidas, cochesEnemigos, numCochesEnemigos, escudoActivo,
@@ -704,6 +838,16 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 dibujarCono(cono); // Redibujar el cono para asegurarse de que no se borre
             }
 
+            if (llanta.activo && cochesEnemigos[i].x < llanta.x + 6 &&
+                cochesEnemigos[i].x + 10 > llanta.x &&
+                cochesEnemigos[i].y < llanta.y + 4 &&
+                cochesEnemigos[i].y + 5 > llanta.y)
+            {
+                borrarCoche(cochesEnemigos[i]); // Borrar el coche enemigo de su posición actual
+                cochesEnemigos[i].x += 10; // Retroceder 10 espacios a la derecha
+                dibujarLlanta(llanta); // Redibujar la llanta para asegurarse de que no se borre
+            }
+
             borrarCoche(cochesEnemigos[i]);
             cochesEnemigos[i].x += cochesEnemigos[i].dx * cochesEnemigos[i].velocidad;
 
@@ -712,7 +856,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             {
                 cochesEnemigos[i].x = 140;
                 cochesEnemigos[i].velocidad = generarAleatorio(1, 3);
-                int coloresPermitidos[] = {1, 4, 5, 8, 12, 13}; // Colores permitidos
+                int coloresPermitidos[] = {1, 4, 5, 12, 13}; // Colores permitidos
                 int numColoresPermitidos = sizeof(coloresPermitidos) / sizeof(coloresPermitidos[0]);
                 cochesEnemigos[i].color = coloresPermitidos[generarAleatorio(0, numColoresPermitidos - 1)];
             }
