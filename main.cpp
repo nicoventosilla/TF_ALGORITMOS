@@ -73,6 +73,259 @@ void esperarTecla()
 
 // FUNCIONES DE DIBUJO
 
+void letraTiempo(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " _____ _                      _ " << endl;
+    gotoxy(x, y + 1);
+    cout << "|_   _|_|___ _____ ___ ___   |_|" << endl;
+    gotoxy(x, y + 2);
+    cout << "  | | | | -_|     | . | . |   _ " << endl;
+    gotoxy(x, y + 3);
+    cout << "  |_| |_|___|_|_|_|  _|___|  |_|" << endl;
+    gotoxy(x, y + 4);
+    cout << "                  |_|      " << endl;
+}
+
+void numero0(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " ___ " << endl;
+    gotoxy(x, y + 1);
+    cout << "|   |" << endl;
+    gotoxy(x, y + 2);
+    cout << "| | |" << endl;
+    gotoxy(x, y + 3);
+    cout << "|___|" << endl;
+}
+
+void numero1(int x, int y)
+{
+    gotoxy(x, y);
+    cout << "   _ " << endl;
+    gotoxy(x, y + 1);
+    cout << "  | |" << endl;
+    gotoxy(x, y + 2);
+    cout << "  | |" << endl;
+    gotoxy(x, y + 3);
+    cout << "  |_|" << endl;
+}
+
+void numero2(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " ___ " << endl;
+    gotoxy(x, y + 1);
+    cout << "|_  |" << endl;
+    gotoxy(x, y + 2);
+    cout << "|  _|" << endl;
+    gotoxy(x, y + 3);
+    cout << "|___|" << endl;
+}
+
+void numero3(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " ___ " << endl;
+    gotoxy(x, y + 1);
+    cout << "|_  |" << endl;
+    gotoxy(x, y + 2);
+    cout << "|_  |" << endl;
+    gotoxy(x, y + 3);
+    cout << "|___|" << endl;
+}
+
+void numero4(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " ___ " << endl;
+    gotoxy(x, y + 1);
+    cout << "| | |" << endl;
+    gotoxy(x, y + 2);
+    cout << "|_  |" << endl;
+    gotoxy(x, y + 3);
+    cout << "  |_|" << endl;
+}
+
+void numero5(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " ___ " << endl;
+    gotoxy(x, y + 1);
+    cout << "|  _|" << endl;
+    gotoxy(x, y + 2);
+    cout << "|_  |" << endl;
+    gotoxy(x, y + 3);
+    cout << "|___|" << endl;
+}
+
+void numero6(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " ___ " << endl;
+    gotoxy(x, y + 1);
+    cout << "|  _|" << endl;
+    gotoxy(x, y + 2);
+    cout << "| . |" << endl;
+    gotoxy(x, y + 3);
+    cout << "|___|" << endl;
+}
+
+void numero7(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " ___ " << endl;
+    gotoxy(x, y + 1);
+    cout << "|_  |" << endl;
+    gotoxy(x, y + 2);
+    cout << "  | |" << endl;
+    gotoxy(x, y + 3);
+    cout << "  |_|" << endl;
+}
+
+void numero8(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " ___ " << endl;
+    gotoxy(x, y + 1);
+    cout << "| . |" << endl;
+    gotoxy(x, y + 2);
+    cout << "| . |" << endl;
+    gotoxy(x, y + 3);
+    cout << "|___|" << endl;
+}
+
+void numero9(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " ___ " << endl;
+    gotoxy(x, y + 1);
+    cout << "| . |" << endl;
+    gotoxy(x, y + 2);
+    cout << "|_  |" << endl;
+    gotoxy(x, y + 3);
+    cout << "|___|" << endl;
+}
+
+void letraS(int x, int y)
+{
+    gotoxy(x, y + 1);
+    cout << " ___ " << endl;
+    gotoxy(x, y + 2);
+    cout << "|_ -|" << endl;
+    gotoxy(x, y + 3);
+    cout << "|___|" << endl;
+}
+
+void mostrarTiempo(int tiempoRestante)
+{
+    int segundos = tiempoRestante % 60;
+    int decenas = segundos / 10;
+    int unidades = segundos % 10;
+
+    // Mostrar la función tiempo
+    letraTiempo(155, 0);
+
+    // Mostrar decenas
+    switch (decenas)
+    {
+    case 0: numero0(191, 0);
+        break;
+    case 1: numero1(191, 0);
+        break;
+    case 2: numero2(191, 0);
+        break;
+    case 3: numero3(191, 0);
+        break;
+    case 4: numero4(191, 0);
+        break;
+    case 5: numero5(191, 0);
+        break;
+    case 6: numero6(191, 0);
+        break;
+    case 7: numero7(191, 0);
+        break;
+    case 8: numero8(191, 0);
+        break;
+    case 9: numero9(191, 0);
+        break;
+    }
+
+    // Mostrar unidades
+    switch (unidades)
+    {
+    case 0: numero0(197, 0);
+        break;
+    case 1: numero1(197, 0);
+        break;
+    case 2: numero2(197, 0);
+        break;
+    case 3: numero3(197, 0);
+        break;
+    case 4: numero4(197, 0);
+        break;
+    case 5: numero5(197, 0);
+        break;
+    case 6: numero6(197, 0);
+        break;
+    case 7: numero7(197, 0);
+        break;
+    case 8: numero8(197, 0);
+        break;
+    case 9: numero9(197, 0);
+        break;
+    }
+
+    // Mostrar letra S
+    letraS(204, 0);
+}
+
+void letraVidas(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " _____ _   _            _ " << endl;
+    gotoxy(x, y + 1);
+    cout << "|  |  |_|_| |___ ___   |_|" << endl;
+    gotoxy(x, y + 2);
+    cout << "|  |  | | . | .'|_ -|   _ " << endl;
+    gotoxy(x, y + 3);
+    cout << " \\___/|_|___|__,|___|  |_|" << endl;
+}
+
+void mostrarVidas(int vidas)
+{
+    // Mostrar la palabra "VIDAS"
+    letraVidas(155, 5);
+
+    // Descomponer el número de vidas en decenas y unidades
+    int unidades = vidas % 10;
+
+    // Mostrar unidades
+    switch (unidades)
+    {
+    case 0: numero0(185, 5);
+        break;
+    case 1: numero1(185, 5);
+        break;
+    case 2: numero2(185, 5);
+        break;
+    case 3: numero3(185, 5);
+        break;
+    case 4: numero4(185, 5);
+        break;
+    case 5: numero5(185, 5);
+        break;
+    case 6: numero6(185, 5);
+        break;
+    case 7: numero7(185, 5);
+        break;
+    case 8: numero8(185, 5);
+        break;
+    case 9: numero9(185, 5);
+        break;
+    }
+}
+
 void dibujarSemaforo(int x, int y)
 {
     color(8);
@@ -993,8 +1246,9 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     Coche cochePrincipal = {0, centroY, 0, 0, COLOR_COCHE_PRINCIPAL, 1};
 
     // Inicializar los coches enemigos
-    int numCochesEnemigos = 3 + (nivel - 1) * 2;
-    inicializarCochesEnemigos(numCochesEnemigos, nivel);
+    int numCochesEnemigos = 3 + (nivel - 1) * 2; // De 3 a 7 coches enemigos
+    // int numCochesEnemigos = nivel * 3; // 3 coches en el nivel 1, 6 en el nivel 2, 9 en el nivel 3
+    inicializarCochesEnemigos(numCochesEnemigos, nivel); // Inicializar los coches enemigos
 
     // Inicializar los coches aliados
     CocheAliado cocheReparacion;
@@ -1014,7 +1268,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     // Inicializar la llanta
     Llanta llanta = {0, 0, 0, false}; // Inicializar la variable llanta
     int tiempoAparicionLlanta = generarAleatorio(17, 22); // Tiempo de aparición de la llanta
-    int duracionLlanta = 5; // Duración de la llanta en segundos
+    int duracionLlanta = 6; // Duración de la llanta en segundos
 
     // Variables para controlar el tiempo de los coches aliados
     bool escudoActivo = false;
@@ -1060,13 +1314,12 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         // Mostrar información del juego
         gotoxy(160, 5);
         color(15);
-        cout << "Vidas: " << vidas;
+        mostrarVidas(vidas);
 
         // Mostrar el tiempo transcurrido
         time_t tiempoActual = time(0);
         int tiempoRestante = tiempoNivel - difftime(tiempoActual, tiempoInicio);
-        gotoxy(160, 3);
-        cout << "Tiempo: " << tiempoRestante << " s ";
+        mostrarTiempo(tiempoRestante);
 
         // Verificar si se ha agotado el tiempo del nivel
         if (tiempoRestante <= 0)
@@ -1084,7 +1337,6 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                     juego(siguienteNivel, vidas);
                 }
             }
-            return;
         }
 
         // Verificar si es el momento de activar los coches aliados
@@ -1163,15 +1415,9 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             borrarCoche(cochePrincipal); // Borrar el coche principal de su posición actual
             dibujarX(cochePrincipal.x, cochePrincipal.y); // Dibujar una X en la posición del coche principal
             vidas--; // Decrementar las vidas
-            gotoxy(160, 7);
-            cout << "Colision! Vidas restantes: " << vidas; // Mostrar un mensaje de colisión
             Sleep(1000);
             borrarX(cochePrincipal.x, cochePrincipal.y); // Borrar la X de la posición del coche principal
             dibujarCono(cono); // Redibujar el cono para asegurarse de que no se borre
-
-            // Limpiar el mensaje de colisión
-            gotoxy(160, 7);
-            cout << "                            ";
 
             // Verificar si el jugador ha perdido
             if (vidas == 0)
@@ -1318,19 +1564,14 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 borrarCoche(cochesEnemigos[i]);
                 dibujarX(cochePrincipal.x, cochePrincipal.y); // Dibujar una X en la posición del coche principal
                 vidas--; // Decrementar las vidas
-                gotoxy(160, 7);
-                cout << "Colision! Vidas restantes: " << vidas; // Mostrar un mensaje de colisión
                 Sleep(1000);
                 borrarX(cochePrincipal.x, cochePrincipal.y); // Borrar la X de la posición del coche principal
-
-                // Limpiar el mensaje de colisión
-                gotoxy(160, 7);
-                cout << "                            ";
 
                 // Verificar si el jugador ha perdido
                 if (vidas == 0)
                 {
                     juegoActivo = false;
+                    system("cls"); // Clear the screen
                     mostrarMensajePerdio();
                     return;
                 }
