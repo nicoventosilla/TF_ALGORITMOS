@@ -403,25 +403,153 @@ struct CocheAliado
 };
 
 // Función para dibujar un coche aliado
-void dibujarCocheAliado(const CocheAliado& coche)
+// Dibuja un coche de reparación en la posición especificada
+void dibujarCocheReparacion(const CocheAliado& coche)
 {
-    color(coche.color); // Color del coche
-    for (int i = 0; i < 5; i++)
+    color(coche.color);
+    for (int i = 1; i <= 9; i++)
     {
-        for (int j = 0; j < 10; j++)
-        {
-            gotoxy(coche.x + j, coche.y + i);
-            cout << CUBO;
-        }
+        gotoxy(coche.x + i, coche.y);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 6; i++)
+    {
+        gotoxy(coche.x + 3 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    gotoxy(coche.x + 1, coche.y + 1);
+    cout << CUBO;
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 3);
+        cout << CUBO;
+    }
+    color(4);
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 2);
+        cout << CUBO;
+    }
+    color(3);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 1 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    color(8);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 1 + i, coche.y + 4);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 6 + i, coche.y + 4);
+        cout << CUBO;
+    }
+}
+
+// Dibuja un coche con escudo en la posición especificada
+void dibujarCocheEscudo(const CocheAliado& coche)
+{
+    color(coche.color);
+    for (int i = 1; i <= 4; i++)
+    {
+        gotoxy(coche.x + 2 + i, coche.y);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 3; i++)
+    {
+        gotoxy(coche.x + 4 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    gotoxy(coche.x + 2, coche.y + 1);
+    cout << CUBO;
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 2);
+        cout << CUBO;
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 3);
+        cout << CUBO;
+    }
+    color(3);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 2 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    color(8);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 1 + i, coche.y + 4);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 6 + i, coche.y + 4);
+        cout << CUBO;
+    }
+}
+
+// Dibuja un coche de velocidad en la posición especificada
+void dibujarCocheVelocidad(const CocheAliado& coche)
+{
+    color(coche.color);
+    for (int i = 1; i <= 4; i++)
+    {
+        gotoxy(coche.x + 2 + i, coche.y);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 3; i++)
+    {
+        gotoxy(coche.x + 4 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    gotoxy(coche.x + 2, coche.y + 1);
+    cout << CUBO;
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 2);
+        cout << CUBO;
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 3);
+        cout << CUBO;
+    }
+    color(3);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 2 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    color(8);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 1 + i, coche.y + 4);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 6 + i, coche.y + 4);
+        cout << CUBO;
     }
 }
 
 // Función para borrar un coche aliado
 void borrarCocheAliado(const CocheAliado& coche)
 {
-    CocheAliado cocheBorrado = coche; // Crear una copia del coche
-    cocheBorrado.color = 0;
-    dibujarCocheAliado(cocheBorrado); // Dibujar el coche borrado
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            gotoxy(coche.x + j, coche.y + i);
+            cout << ' ';
+        }
+    }
 }
 
 // Función para inicializar los coches aliados
@@ -449,13 +577,13 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
     borrarCocheAliado(cocheAliado); // Borrar el coche aliado de la posición actual
     cocheAliado.x += cocheAliado.dx; // Mover el coche aliado hacia la izquierda
 
-    // Si el coche aliado llega al extremo izquierdo, desactivarlo
+    // Desactivar el coche aliado si se sale de la pantalla
     if (cocheAliado.x < 0)
     {
         cocheAliado.activo = false;
     }
 
-    // Verificar colisión con el coche principal
+    // Verificar colisiones con el coche principal
     if (cochePrincipal.x < cocheAliado.x + 10 &&
         cochePrincipal.x + 10 > cocheAliado.x &&
         cochePrincipal.y < cocheAliado.y + 5 &&
@@ -481,7 +609,7 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
         }
     }
 
-    // Verificar colisión con los coches enemigos
+    // Verificar colisiones con los coches enemigos
     for (int i = 0; i < numCochesEnemigos; ++i)
     {
         if (cochesEnemigos[i].x < cocheAliado.x + 11 &&
@@ -497,7 +625,18 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
     // Dibujar el coche aliado en la nueva posición
     if (cocheAliado.activo)
     {
-        dibujarCocheAliado(cocheAliado);
+        if (cocheAliado.tipo == 1)
+        {
+            dibujarCocheReparacion(cocheAliado);
+        }
+        else if (cocheAliado.tipo == 2)
+        {
+            dibujarCocheEscudo(cocheAliado);
+        }
+        else if (cocheAliado.tipo == 3)
+        {
+            dibujarCocheVelocidad(cocheAliado);
+        }
     }
 }
 
