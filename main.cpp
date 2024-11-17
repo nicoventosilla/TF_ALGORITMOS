@@ -69,6 +69,7 @@ void esperarTecla()
         tecla = _getch();
     }
     while (tecla != 27);
+    system("cls");
 }
 
 // FUNCIONES DE DIBUJO
@@ -788,27 +789,31 @@ void mostrarMensajeNivel(int nivel)
 }
 
 // Muestra un mensaje de que el jugador perdió el juego
+// Muestra un mensaje de que el jugador perdió el juego
 void mostrarMensajePerdio()
 {
-    system("cls");
+    system("cls"); // Limpiar la pantalla
     color(15);
     cout << "-------------------" << endl;
     cout << "Perdiste el juego!" << endl;
     cout << "-------------------" << endl;
     Sleep(1000); // Pausa para mostrar el mensaje de que perdió el juego
     esperarTecla(); // Espera a que el usuario presione una tecla para regresar al menú principal
+    system("cls"); // Limpiar la pantalla nuevamente
 }
 
 // Muestra un mensaje de que el jugador ganó el juego
 void mostrarMensajeGanasteElJuego()
 {
-    system("cls");
+    system("cls"); // Limpiar la pantalla
     color(15);
     cout << "-------------------" << endl;
     cout << "Felicidades! Has ganado el juego!" << endl;
     cout << "-------------------" << endl;
     cout << "Presione Enter para continuar..." << endl;
     while (_getch() != 13); // Espera a que el usuario presione Enter (código ASCII 13)
+    // Sleep(1000); // Pausa breve para asegurar que la pantalla se limpie correctamente
+    system("cls"); // Limpiar la pantalla nuevamente
 }
 
 // Muestra un mensaje de que el jugador ganó el nivel
@@ -823,10 +828,11 @@ void mostrarMensajeGanaste()
     while (_getch() != 13); // Espera a que el usuario presione Enter (código ASCII 13)
 }
 
+
 // Inicializa los coches enemigos en posiciones aleatorias
 void inicializarCochesEnemigos(int numCoches, int nivel)
 {
-    int posicionesY[9] = {15, 23, 30, 15, 23, 30, 15, 23, 30}; // Posiciones Y de los coches enemigos
+    int posicionesY[9] = {16, 23, 30, 16, 23, 30, 16, 23, 30}; // Posiciones Y de los coches enemigos
     int coloresPermitidos[] = {1, 4, 5, 12, 13}; // Colores permitidos
     int numColoresPermitidos = sizeof(coloresPermitidos) / sizeof(coloresPermitidos[0]); // Número de colores permitidos
 
@@ -1008,7 +1014,7 @@ void borrarCocheAliado(const CocheAliado& coche)
 void inicializarCocheAliado(CocheAliado& cocheAliado, int tipo)
 {
     cocheAliado.x = 140; // Aparece en el extremo derecho
-    int carriles[] = {16, 22, 29}; // Posiciones Y de los carriles
+    int carriles[] = {15, 22, 29}; // Posiciones Y de los carriles
     cocheAliado.y = carriles[generarAleatorio(0, 2)]; // Aparece en una de las tres líneas específicas
     cocheAliado.dx = -1; // Moverse de derecha a izquierda
     cocheAliado.dy = 0; // No se mueve verticalmente
@@ -1142,7 +1148,7 @@ void borrarCono(const Cono& cono)
 
 void inicializarCono(Cono& cono, int carrilOcupado = -1, int llantaX = -1, int llantaY = -1)
 {
-    int carriles[] = {16, 22, 29}; // Posiciones Y de los carriles
+    int carriles[] = {15, 22, 29}; // Posiciones Y de los carriles
     int carril;
     do
     {
@@ -1210,7 +1216,7 @@ void borrarLlanta(const Llanta& llanta)
 
 void inicializarLlanta(Llanta& llanta, int carrilOcupado = -1, int conoX = -1, int conoY = -1)
 {
-    int carriles[] = {16, 22, 29}; // Posiciones Y de los carriles
+    int carriles[] = {15, 22, 29}; // Posiciones Y de los carriles
     int carril;
     do
     {
@@ -1304,9 +1310,9 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     // Variables para controlar el flujo del juego
     bool juegoActivo = true; // Indica si el juego está activo
     time_t tiempoInicio = time(0); // Tiempo de inicio del juego
-    int tiempoAparicionReparacion = generarAleatorio(5, 9); // Tiempo de aparición del coche de reparación
-    int tiempoAparicionEscudo = generarAleatorio(0, 4); // Tiempo de aparición del coche de escudo
-    int tiempoAparicionVelocidad = generarAleatorio(9, 13); // Tiempo de aparición del coche de velocidad
+    int tiempoAparicionReparacion = generarAleatorio(5, 10); // Tiempo de aparición del coche de reparación
+    int tiempoAparicionEscudo = generarAleatorio(0, 5); // Tiempo de aparición del coche de escudo
+    int tiempoAparicionVelocidad = generarAleatorio(10, 14); // Tiempo de aparición del coche de velocidad
 
     // Bucle principal del juego
     while (juegoActivo)
@@ -1324,6 +1330,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         // Verificar si se ha agotado el tiempo del nivel
         if (tiempoRestante <= 0)
         {
+            break;
             juegoActivo = false;
             if (nivel == 3)
             {
@@ -1412,9 +1419,9 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             cochePrincipal.y < cono.y + 4 &&
             cochePrincipal.y + 5 > cono.y)
         {
+            vidas--; // Decrementar las vidas
             borrarCoche(cochePrincipal); // Borrar el coche principal de su posición actual
             dibujarX(cochePrincipal.x, cochePrincipal.y); // Dibujar una X en la posición del coche principal
-            vidas--; // Decrementar las vidas
             Sleep(1000);
             borrarX(cochePrincipal.x, cochePrincipal.y); // Borrar la X de la posición del coche principal
             dibujarCono(cono); // Redibujar el cono para asegurarse de que no se borre
@@ -1424,6 +1431,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             {
                 juegoActivo = false;
                 mostrarMensajePerdio();
+                system("cls");
                 return;
             }
             else
@@ -1454,24 +1462,19 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             cochePrincipal.y < llanta.y + 4 &&
             cochePrincipal.y + 5 > llanta.y)
         {
+            vidas--; // Decrementar las vidas
             borrarCoche(cochePrincipal); // Borrar el coche principal de su posición actual
             dibujarX(cochePrincipal.x, cochePrincipal.y); // Dibujar una X en la posición del coche principal
-            vidas--; // Decrementar las vidas
-            gotoxy(160, 7);
-            cout << "Colision! Vidas restantes: " << vidas; // Mostrar un mensaje de colisión
             Sleep(1000);
             borrarX(cochePrincipal.x, cochePrincipal.y); // Borrar la X de la posición del coche principal
             dibujarLlanta(llanta); // Redibujar la llanta para asegurarse de que no se borre
-
-            // Limpiar el mensaje de colisión
-            gotoxy(160, 7);
-            cout << "                            ";
 
             // Verificar si el jugador ha perdido
             if (vidas == 0)
             {
                 juegoActivo = false;
                 mostrarMensajePerdio();
+                system("cls");
                 return;
             }
             else
@@ -1560,10 +1563,10 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 cochePrincipal.y < cochesEnemigos[i].y + 5 &&
                 cochePrincipal.y + 5 > cochesEnemigos[i].y)
             {
+                vidas--; // Decrementar las vidas
                 borrarCoche(cochePrincipal);
                 borrarCoche(cochesEnemigos[i]);
                 dibujarX(cochePrincipal.x, cochePrincipal.y); // Dibujar una X en la posición del coche principal
-                vidas--; // Decrementar las vidas
                 Sleep(1000);
                 borrarX(cochePrincipal.x, cochePrincipal.y); // Borrar la X de la posición del coche principal
 
@@ -1571,8 +1574,8 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 if (vidas == 0)
                 {
                     juegoActivo = false;
-                    system("cls"); // Clear the screen
                     mostrarMensajePerdio();
+                    system("cls");
                     return;
                 }
                 else
@@ -1591,6 +1594,18 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
         dibujarCochePrincipal(cochePrincipal); // Dibujar el coche principal
         Sleep(20); // Pausa de 20 ms
+    }
+
+    system("cls");
+
+    if (nivel == 3)
+    {
+        mostrarMensajeGanasteElJuego();
+    }
+    else
+    {
+        mostrarMensajeGanaste();
+        juego(siguienteNivel, vidas);
     }
 }
 
