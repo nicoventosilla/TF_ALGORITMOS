@@ -73,6 +73,60 @@ void esperarTecla()
 
 // FUNCIONES DE DIBUJO
 
+void dibujarSemaforo(int x, int y)
+{
+    color(8);
+    gotoxy(x + 1, y);
+    cout << CUBO;
+    gotoxy(x + 2, y);
+    cout << CUBO;
+    gotoxy(x + 1, y + 2);
+    cout << CUBO;
+    gotoxy(x + 2, y + 2);
+    cout << CUBO;
+    gotoxy(x + 1, y + 4);
+    cout << CUBO;
+    gotoxy(x + 2, y + 4);
+    cout << CUBO;
+    gotoxy(x + 1, y + 6);
+    cout << CUBO;
+    gotoxy(x + 2, y + 6);
+    cout << CUBO;
+    gotoxy(x + 1, y + 7);
+    cout << CUBO;
+    gotoxy(x + 2, y + 7);
+    cout << CUBO;
+    gotoxy(x + 1, y + 8);
+    cout << CUBO;
+    gotoxy(x + 2, y + 8);
+    cout << CUBO;
+    for (int i = 0; i < 7; i++)
+    {
+        gotoxy(x, y + i);
+        cout << CUBO;
+    }
+    for (int i = 0; i < 7; i++)
+    {
+        gotoxy(x + 3, y + i);
+        cout << CUBO;
+    }
+    color(4);
+    gotoxy(x + 1, y + 1);
+    cout << CUBO;
+    gotoxy(x + 2, y + 1);
+    cout << CUBO;
+    color(6);
+    gotoxy(x + 1, y + 3);
+    cout << CUBO;
+    gotoxy(x + 2, y + 3);
+    cout << CUBO;
+    color(10);
+    gotoxy(x + 1, y + 5);
+    cout << CUBO;
+    gotoxy(x + 2, y + 5);
+    cout << CUBO;
+}
+
 int FONDO_NIVEL_1[15][150] = {
     {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -186,26 +240,28 @@ void dibujarEscenarioNivel1()
 {
     ocultarCursor();
 
-    // Primer rectángulo
+    // Rectángulo superior
     for (int i = 0; i < 15; i++)
     {
         for (int j = 0; j < 150; j++)
         {
-            if (FONDO_NIVEL_1[i][j] == 0)
+            if (FONDO_NIVEL_1[i][j] == 0) // Si es 0, dibuja un cubo verde claro
             {
-                color(10);
+                color(10); // Color verde claro
                 cout << CUBO;
             }
-            else if (FONDO_NIVEL_1[i][j] == 3)
+            else if (FONDO_NIVEL_1[i][j] == 3) // Si es 3, dibuja un cubo verde oscuro
             {
-                color(2);
+                color(2); // Color verde oscuro
                 cout << CUBO;
             }
         }
-        cout << endl;
+        cout << endl; // Salto de línea
     }
 
-    // Tercer rectángulo
+    dibujarSemaforo(143, 5); // Dibuja el semáforo en la posición (143, 5)
+
+    // Rectángulo inferior
     gotoxy(0, 35);
     for (int i = 0; i < 15; i++)
     {
@@ -243,12 +299,14 @@ void dibujarEscenarioNivel1()
 void dibujarEscenarioNivel2()
 {
     // Código para dibujar el escenario del nivel 2
+    dibujarSemaforo(143, 5);
 }
 
 // Dibuja el escenario del nivel 3
 void dibujarEscenarioNivel3()
 {
     // Código para dibujar el escenario del nivel 3
+    dibujarSemaforo(143, 5);
 }
 
 // Dibuja el coche principal en la posición especificada
@@ -342,7 +400,6 @@ void dibujarCocheEnemigo(const Coche& coche)
 }
 
 // Borra un coche de la pantalla
-// Borra un coche de la pantalla dibujando espacios en un rectángulo de 5x10
 void borrarCoche(const Coche& coche)
 {
     for (int i = 0; i < 5; i++)
@@ -420,7 +477,6 @@ void moverCoche(Coche& coche)
 void dibujarX(int x, int y)
 {
     color(15); // Color blanco
-
     gotoxy(x, y);
     cout << CUBO;
     gotoxy(x + 1, y + 1);
@@ -431,7 +487,31 @@ void dibujarX(int x, int y)
     cout << CUBO;
     gotoxy(x + 4, y + 4);
     cout << CUBO;
+    gotoxy(x + 4, y);
+    cout << CUBO;
+    gotoxy(x + 3, y + 1);
+    cout << CUBO;
+    gotoxy(x + 2, y + 2);
+    cout << CUBO;
+    gotoxy(x + 1, y + 3);
+    cout << CUBO;
+    gotoxy(x, y + 4);
+    cout << CUBO;
+}
 
+void borrarX(int x, int y)
+{
+    color(0); // Color negro
+    gotoxy(x, y);
+    cout << CUBO;
+    gotoxy(x + 1, y + 1);
+    cout << CUBO;
+    gotoxy(x + 2, y + 2);
+    cout << CUBO;
+    gotoxy(x + 3, y + 3);
+    cout << CUBO;
+    gotoxy(x + 4, y + 4);
+    cout << CUBO;
     gotoxy(x + 4, y);
     cout << CUBO;
     gotoxy(x + 3, y + 1);
@@ -522,8 +602,7 @@ struct CocheAliado
     bool activo; // Indica si el coche aliado está activo
 };
 
-// Función para dibujar un coche aliado
-// Dibuja un coche de reparación en la posición especificada
+// Función para dibujar un coche de reparación en la posición especificada
 void dibujarCocheReparacion(const CocheAliado& coche)
 {
     color(coche.color);
@@ -760,6 +839,7 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
     }
 }
 
+// Estructura para los conos
 struct Cono
 {
     int x, y; // Posición del cono
@@ -807,7 +887,7 @@ void borrarCono(const Cono& cono)
     cout << "         ";
 }
 
-void inicializarCono(Cono& cono, int carrilOcupado = -1)
+void inicializarCono(Cono& cono, int carrilOcupado = -1, int llantaX = -1, int llantaY = -1)
 {
     int carriles[] = {16, 22, 29}; // Posiciones Y de los carriles
     int carril;
@@ -817,7 +897,12 @@ void inicializarCono(Cono& cono, int carrilOcupado = -1)
     }
     while (carril == carrilOcupado); // Asegurarse de que no sea el mismo carril que la llanta
 
-    cono.x = generarAleatorio(80, 110); // Posición X aleatoria
+    do
+    {
+        cono.x = generarAleatorio(80, 110); // Posición X aleatoria
+    }
+    while (cono.x == llantaX && carriles[carril] == llantaY); // Asegurarse de que no coincidan las coordenadas
+
     cono.y = carriles[carril]; // Aparece en uno de los carriles disponibles
     cono.color = 14; // Color del cono
     cono.activo = true; // Activar el cono
@@ -870,7 +955,7 @@ void borrarLlanta(const Llanta& llanta)
     cout << "      ";
 }
 
-void inicializarLlanta(Llanta& llanta, int carrilOcupado = -1)
+void inicializarLlanta(Llanta& llanta, int carrilOcupado = -1, int conoX = -1, int conoY = -1)
 {
     int carriles[] = {16, 22, 29}; // Posiciones Y de los carriles
     int carril;
@@ -880,7 +965,12 @@ void inicializarLlanta(Llanta& llanta, int carrilOcupado = -1)
     }
     while (carril == carrilOcupado); // Asegurarse de que no sea el mismo carril que el cono
 
-    llanta.x = generarAleatorio(80, 110); // Posición X aleatoria
+    do
+    {
+        llanta.x = generarAleatorio(80, 110); // Posición X aleatoria
+    }
+    while (llanta.x == conoX && carriles[carril] == conoY); // Asegurarse de que no coincidan las coordenadas
+
     llanta.y = carriles[carril]; // Aparece en uno de los carriles disponibles
     llanta.color = 8; // Color de la llanta
     llanta.activo = true; // Activar la llanta
@@ -918,12 +1008,12 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
     // Inicializar el cono
     Cono cono = {0, 0, 0, false}; // Inicializar la variable cono
-    int tiempoAparicionCono = generarAleatorio(15, 19); // Tiempo de aparición del cono
+    int tiempoAparicionCono = generarAleatorio(15, 20); // Tiempo de aparición del cono
     int duracionCono = 5; // Duración del cono en segundos
 
     // Inicializar la llanta
     Llanta llanta = {0, 0, 0, false}; // Inicializar la variable llanta
-    int tiempoAparicionLlanta = generarAleatorio(18, 22); // Tiempo de aparición de la llanta
+    int tiempoAparicionLlanta = generarAleatorio(17, 22); // Tiempo de aparición de la llanta
     int duracionLlanta = 5; // Duración de la llanta en segundos
 
     // Variables para controlar el tiempo de los coches aliados
@@ -1053,7 +1143,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         // Verificar si es el momento de activar el cono
         if (!cono.activo && tiempoRestante == tiempoNivel - tiempoAparicionCono)
         {
-            inicializarCono(cono, llanta.activo ? llanta.y : -1);
+            inicializarCono(cono, llanta.activo ? llanta.y : -1, llanta.x, llanta.y);
             dibujarCono(cono);
         }
 
@@ -1076,6 +1166,8 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             gotoxy(160, 7);
             cout << "Colision! Vidas restantes: " << vidas; // Mostrar un mensaje de colisión
             Sleep(1000);
+            borrarX(cochePrincipal.x, cochePrincipal.y); // Borrar la X de la posición del coche principal
+            dibujarCono(cono); // Redibujar el cono para asegurarse de que no se borre
 
             // Limpiar el mensaje de colisión
             gotoxy(160, 7);
@@ -1099,7 +1191,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         // Verificar si es el momento de activar la llanta
         if (!llanta.activo && tiempoRestante == tiempoNivel - tiempoAparicionLlanta)
         {
-            inicializarLlanta(llanta, cono.activo ? cono.y : -1);
+            inicializarLlanta(llanta, cono.activo ? cono.y : -1, cono.x, cono.y);
             dibujarLlanta(llanta);
         }
 
@@ -1122,6 +1214,8 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             gotoxy(160, 7);
             cout << "Colision! Vidas restantes: " << vidas; // Mostrar un mensaje de colisión
             Sleep(1000);
+            borrarX(cochePrincipal.x, cochePrincipal.y); // Borrar la X de la posición del coche principal
+            dibujarLlanta(llanta); // Redibujar la llanta para asegurarse de que no se borre
 
             // Limpiar el mensaje de colisión
             gotoxy(160, 7);
@@ -1227,6 +1321,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 gotoxy(160, 7);
                 cout << "Colision! Vidas restantes: " << vidas; // Mostrar un mensaje de colisión
                 Sleep(1000);
+                borrarX(cochePrincipal.x, cochePrincipal.y); // Borrar la X de la posición del coche principal
 
                 // Limpiar el mensaje de colisión
                 gotoxy(160, 7);
