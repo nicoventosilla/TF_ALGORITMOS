@@ -14,7 +14,6 @@ const int COLOR_FONDO = 10;
 const int COLOR_FONDO_NIVEL2 = 14;
 const int COLOR_FONDO_NIVEL3 = 12;
 const int COLOR_COCHE_PRINCIPAL = 15;
-const int COLOR_COCHE_ENEMIGO = 12;
 const int ANCHO = 100;
 const int ALTO = 40;
 const int NUM_ENEMY_CARS = 9;
@@ -132,26 +131,108 @@ void dibujarEscenarioNivel3()
     // Código para dibujar el escenario del nivel 3
 }
 
-// Dibuja un coche en la posición especificada
-void dibujarCoche(const Coche& coche)
+// Dibuja el coche principal en la posición especificada
+void dibujarCochePrincipal(const Coche& coche)
+{
+    color(COLOR_COCHE_PRINCIPAL);
+    for (int i = 0; i < 8; i++)
+    {
+        gotoxy(coche.x + i, coche.y);
+        cout << CUBO;
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 1);
+        cout << CUBO;
+    }
+    gotoxy(coche.x + 7, coche.y + 1);
+    cout << CUBO;
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 2);
+        cout << CUBO;
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 3);
+        cout << CUBO;
+    }
+    color(3);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 4 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    color(8);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 4);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 5 + i, coche.y + 4);
+        cout << CUBO;
+    }
+}
+
+// Dibuja el coche enemigo en la posición especificada
+void dibujarCocheEnemigo(const Coche& coche)
 {
     color(coche.color);
+    for (int i = 0; i < 8; i++)
+    {
+        gotoxy(coche.x + 2 + i, coche.y);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 5; i++)
+    {
+        gotoxy(coche.x + 4 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    gotoxy(coche.x + 2, coche.y + 1);
+    cout << CUBO;
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 2);
+        cout << CUBO;
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 3);
+        cout << CUBO;
+    }
+    color(3);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 2 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    color(8);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 1 + i, coche.y + 4);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 6 + i, coche.y + 4);
+        cout << CUBO;
+    }
+}
+
+// Borra un coche de la pantalla
+// Borra un coche de la pantalla dibujando espacios en un rectángulo de 5x10
+void borrarCoche(const Coche& coche)
+{
     for (int i = 0; i < 5; i++)
     {
         for (int j = 0; j < 10; j++)
         {
             gotoxy(coche.x + j, coche.y + i);
-            cout << CUBO;
+            cout << ' ';
         }
     }
-}
-
-// Borra un coche de la pantalla
-void borrarCoche(const Coche& coche)
-{
-    Coche cocheBorrado = coche;
-    cocheBorrado.color = 0;
-    dibujarCoche(cocheBorrado);
 }
 
 // Redibuja las líneas blancas horizontales
@@ -212,7 +293,7 @@ void moverCoche(Coche& coche)
 
     redibujarLineas(); // Redibujar las líneas blancas
 
-    dibujarCoche(coche); // Dibujar el coche en la nueva posición
+    dibujarCochePrincipal(coche); // Dibujar el coche en la nueva posición
 }
 
 // Dibuja una X en la posición especificada
@@ -477,7 +558,7 @@ void inicializarCono(Cono& cono, int carrilOcupado = -1)
     }
     while (carril == carrilOcupado); // Asegurarse de que no sea el mismo carril que la llanta
 
-    cono.x = generarAleatorio(70, 90); // Posición X aleatoria
+    cono.x = generarAleatorio(80, 110); // Posición X aleatoria
     cono.y = carriles[carril]; // Aparece en uno de los carriles disponibles
     cono.color = 14; // Color del cono
     cono.activo = true; // Activar el cono
@@ -540,7 +621,7 @@ void inicializarLlanta(Llanta& llanta, int carrilOcupado = -1)
     }
     while (carril == carrilOcupado); // Asegurarse de que no sea el mismo carril que el cono
 
-    llanta.x = generarAleatorio(70, 90); // Posición X aleatoria
+    llanta.x = generarAleatorio(80, 110); // Posición X aleatoria
     llanta.y = carriles[carril]; // Aparece en uno de los carriles disponibles
     llanta.color = 8; // Color de la llanta
     llanta.activo = true; // Activar la llanta
@@ -578,12 +659,12 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
     // Inicializar el cono
     Cono cono = {0, 0, 0, false}; // Inicializar la variable cono
-    int tiempoAparicionCono = generarAleatorio(15, 20); // Tiempo de aparición del cono
+    int tiempoAparicionCono = generarAleatorio(15, 19); // Tiempo de aparición del cono
     int duracionCono = 5; // Duración del cono en segundos
 
     // Inicializar la llanta
     Llanta llanta = {0, 0, 0, false}; // Inicializar la variable llanta
-    int tiempoAparicionLlanta = generarAleatorio(19, 24); // Tiempo de aparición de la llanta
+    int tiempoAparicionLlanta = generarAleatorio(18, 22); // Tiempo de aparición de la llanta
     int duracionLlanta = 5; // Duración de la llanta en segundos
 
     // Variables para controlar el tiempo de los coches aliados
@@ -609,12 +690,12 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         break;
     }
 
-    dibujarCoche(cochePrincipal); // Dibujar el coche principal
+    dibujarCochePrincipal(cochePrincipal); // Dibujar el coche principal
 
     // Dibujar los coches enemigos
     for (int i = 0; i < numCochesEnemigos; ++i)
     {
-        dibujarCoche(cochesEnemigos[i]);
+        dibujarCocheEnemigo(cochesEnemigos[i]);
     }
 
     // Variables para controlar el flujo del juego
@@ -848,8 +929,8 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 dibujarLlanta(llanta); // Redibujar la llanta para asegurarse de que no se borre
             }
 
-            borrarCoche(cochesEnemigos[i]);
-            cochesEnemigos[i].x += cochesEnemigos[i].dx * cochesEnemigos[i].velocidad;
+            borrarCoche(cochesEnemigos[i]); // Borrar el coche enemigo de su posición actual
+            cochesEnemigos[i].x += cochesEnemigos[i].dx * cochesEnemigos[i].velocidad; // Mover el coche enemigo
 
             // Si el coche enemigo llega al extremo izquierdo, reiniciar su posición
             if (cochesEnemigos[i].x < 0)
@@ -910,10 +991,10 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
                 }
             }
 
-            dibujarCoche(cochesEnemigos[i]); // Dibujar el coche enemigo en la nueva posición
+            dibujarCocheEnemigo(cochesEnemigos[i]); // Dibujar el coche enemigo en la nueva posición
         }
 
-        dibujarCoche(cochePrincipal); // Dibujar el coche principal
+        dibujarCochePrincipal(cochePrincipal); // Dibujar el coche principal
         Sleep(20); // Pausa de 20 ms
     }
 }
