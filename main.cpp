@@ -77,15 +77,13 @@ void esperarTecla()
 void letraTiempo(int x, int y)
 {
     gotoxy(x, y);
-    cout << " _____ _                      _ " << endl;
+    cout << " _____ _ _____ _____ _____ _____    _ " << endl;
     gotoxy(x, y + 1);
-    cout << "|_   _|_|___ _____ ___ ___   |_|" << endl;
+    cout << "|_   _| |   __|     |  _  |     |  |_|" << endl;
     gotoxy(x, y + 2);
-    cout << "  | | | | -_|     | . | . |   _ " << endl;
+    cout << "  | | | |   __| | | |   __|  |  |   _ " << endl;
     gotoxy(x, y + 3);
-    cout << "  |_| |_|___|_|_|_|  _|___|  |_|" << endl;
-    gotoxy(x, y + 4);
-    cout << "                  |_|      " << endl;
+    cout << "  |_| |_|_____|_|_|_|__|  |_____|  |_|" << endl;
 }
 
 void numero0(int x, int y)
@@ -230,31 +228,6 @@ void mostrarTiempo(int tiempoRestante)
     // Mostrar decenas
     switch (decenas)
     {
-    case 0: numero0(191, 0);
-        break;
-    case 1: numero1(191, 0);
-        break;
-    case 2: numero2(191, 0);
-        break;
-    case 3: numero3(191, 0);
-        break;
-    case 4: numero4(191, 0);
-        break;
-    case 5: numero5(191, 0);
-        break;
-    case 6: numero6(191, 0);
-        break;
-    case 7: numero7(191, 0);
-        break;
-    case 8: numero8(191, 0);
-        break;
-    case 9: numero9(191, 0);
-        break;
-    }
-
-    // Mostrar unidades
-    switch (unidades)
-    {
     case 0: numero0(197, 0);
         break;
     case 1: numero1(197, 0);
@@ -277,8 +250,33 @@ void mostrarTiempo(int tiempoRestante)
         break;
     }
 
+    // Mostrar unidades
+    switch (unidades)
+    {
+    case 0: numero0(203, 0);
+        break;
+    case 1: numero1(203, 0);
+        break;
+    case 2: numero2(203, 0);
+        break;
+    case 3: numero3(203, 0);
+        break;
+    case 4: numero4(203, 0);
+        break;
+    case 5: numero5(203, 0);
+        break;
+    case 6: numero6(203, 0);
+        break;
+    case 7: numero7(203, 0);
+        break;
+    case 8: numero8(203, 0);
+        break;
+    case 9: numero9(203, 0);
+        break;
+    }
+
     // Mostrar letra S
-    letraS(204, 0);
+    letraS(210, 0);
 }
 
 void letraVidas(int x, int y)
@@ -324,6 +322,204 @@ void mostrarVidas(int vidas)
         break;
     case 9: numero9(185, 5);
         break;
+    }
+}
+
+void letraEscudo(int x, int y)
+{
+    gotoxy(x, y);
+    cout << " _____               _        _ " << endl;
+    gotoxy(x, y + 1);
+    cout << "|   __|___ ___ _ _ _| |___   |_|" << endl;
+    gotoxy(x, y + 2);
+    cout << "|   __|_ -|  _| | | . | . |   _ " << endl;
+    gotoxy(x, y + 3);
+    cout << "|_____|___|___|___|___|___|  |_|" << endl;
+}
+
+void mostrarEscudo(int tiempoRestante)
+{
+    int segundos = tiempoRestante % 60;
+    int decenas = segundos / 10;
+    int unidades = segundos % 10;
+
+    color(11);
+    // Mostrar la palabra "ESCUDO"
+    letraEscudo(155, 10);
+
+    // Mostrar decenas
+    switch (decenas)
+    {
+    case 0: numero0(191, 10);
+        break;
+    case 1: numero1(191, 10);
+        break;
+    case 2: numero2(191, 10);
+        break;
+    case 3: numero3(191, 10);
+        break;
+    case 4: numero4(191, 10);
+        break;
+    case 5: numero5(191, 10);
+        break;
+    case 6: numero6(191, 10);
+        break;
+    case 7: numero7(191, 10);
+        break;
+    case 8: numero8(191, 10);
+        break;
+    case 9: numero9(191, 10);
+        break;
+    }
+
+    // Mostrar unidades
+    switch (unidades)
+    {
+    case 0: numero0(197, 10);
+        break;
+    case 1: numero1(197, 10);
+        break;
+    case 2: numero2(197, 10);
+        break;
+    case 3: numero3(197, 10);
+        break;
+    case 4: numero4(197, 10);
+        break;
+    case 5: numero5(197, 10);
+        break;
+    case 6: numero6(197, 10);
+        break;
+    case 7: numero7(197, 10);
+        break;
+    case 8: numero8(197, 10);
+        break;
+    case 9: numero9(197, 10);
+        break;
+    }
+
+    // Mostrar letra S
+    letraS(204, 10);
+}
+
+void borrarEscudo()
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        gotoxy(155, 10 + i);
+        cout << "                                ";
+    }
+
+    for (int i = 0; i < 4; ++i)
+    {
+        gotoxy(191, 10 + i);
+        cout << "      ";
+        gotoxy(197, 10 + i);
+        cout << "      ";
+    }
+
+    for (int i = 0; i < 4; ++i)
+    {
+        gotoxy(204, 10 + i);
+        cout << "      ";
+    }
+}
+
+void letraVelocidad(int x, int y)
+{
+    color(10);
+    gotoxy(x, y);
+    cout << " _____     _         _   _       _    _ " << endl;
+    gotoxy(x, y + 1);
+    cout << "|  |  |___| |___ ___|_|_| |___ _| |  |_|" << endl;
+    gotoxy(x, y + 2);
+    cout << "|  |  | -_| | . |  _| | . | .'| . |   _ " << endl;
+    gotoxy(x, y + 3);
+    cout << " \\___/|___|_|___|___|_|___|__,|___|  |_|" << endl;
+}
+
+void mostrarVelocidad(int tiempoRestanteVelocidad)
+{
+    int segundos = tiempoRestanteVelocidad % 60;
+    int decenas = segundos / 10;
+    int unidades = segundos % 10;
+
+    // Mostrar la palabra "VELOCIDAD"
+    letraVelocidad(155, 15);
+
+    // Mostrar decenas
+    switch (decenas)
+    {
+    case 0: numero0(199, 15);
+        break;
+    case 1: numero1(199, 15);
+        break;
+    case 2: numero2(199, 15);
+        break;
+    case 3: numero3(199, 15);
+        break;
+    case 4: numero4(199, 15);
+        break;
+    case 5: numero5(199, 15);
+        break;
+    case 6: numero6(199, 15);
+        break;
+    case 7: numero7(199, 15);
+        break;
+    case 8: numero8(199, 15);
+        break;
+    case 9: numero9(199, 15);
+        break;
+    }
+
+    // Mostrar unidades
+    switch (unidades)
+    {
+    case 0: numero0(205, 15);
+        break;
+    case 1: numero1(205, 15);
+        break;
+    case 2: numero2(205, 15);
+        break;
+    case 3: numero3(205, 15);
+        break;
+    case 4: numero4(205, 15);
+        break;
+    case 5: numero5(205, 15);
+        break;
+    case 6: numero6(205, 15);
+        break;
+    case 7: numero7(205, 15);
+        break;
+    case 8: numero8(205, 15);
+        break;
+    case 9: numero9(205, 15);
+        break;
+    }
+
+    // Mostrar letra S
+    letraS(212, 15);
+}
+
+void borrarVelocidad()
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        gotoxy(155, 15 + i);
+        cout << "                                        ";
+    }
+
+    for (int i = 0; i < 4; ++i)
+    {
+        gotoxy(199, 15 + i);
+        cout << "      ";
+        gotoxy(205, 15 + i);
+        cout << "       ";
+    }
+
+    for (int i = 0; i < 4; ++i)
+    {
+        gotoxy(212, 15 + i);
+        cout << "       ";
     }
 }
 
@@ -1368,15 +1564,13 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             tiempoRestanteEscudo = 10 - difftime(tiempoActual, tiempoEscudo);
             if (tiempoRestanteEscudo <= 0)
             {
-                escudoActivo = false;
-                tiempoRestanteEscudo = 0;
-                gotoxy(160, 9);
-                cout << "                ";
+                escudoActivo = false; // Desactivar el escudo
+                tiempoRestanteEscudo = 0; // Reiniciar el tiempo restante
+                borrarEscudo(); // Borrar el escudo
             }
             else
             {
-                gotoxy(160, 9);
-                cout << "Escudo: " << tiempoRestanteEscudo << " s ";
+                mostrarEscudo(tiempoRestanteEscudo);
             }
         }
 
@@ -1386,16 +1580,14 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             tiempoRestanteVelocidad = 10 - difftime(tiempoActual, tiempoVelocidad);
             if (tiempoRestanteVelocidad <= 0)
             {
-                velocidadActiva = false;
-                tiempoRestanteVelocidad = 0;
-                cochePrincipal.velocidad = 1;
-                gotoxy(160, 11);
-                cout << "                ";
+                velocidadActiva = false; // Desactivar la velocidad
+                tiempoRestanteVelocidad = 0; // Reiniciar el tiempo restante
+                cochePrincipal.velocidad = 1; // Restablecer la velocidad normal
+                borrarVelocidad(); // Borrar la velocidad
             }
             else
             {
-                gotoxy(160, 11);
-                cout << "Velocidad: " << tiempoRestanteVelocidad << " s ";
+                mostrarVelocidad(tiempoRestanteVelocidad); // Mostrar el tiempo restante de la velocidad
             }
         }
 
