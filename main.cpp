@@ -1409,6 +1409,7 @@ void borrarX(int x, int y)
 void mostrarMensajeNivel1()
 {
     system("cls");
+    color(10);
     cout << "  _   _ _______      ________ _        __ " << endl;
     cout << " | \\ | |_   _\\ \\    / /  ____| |      /_ |" << endl;
     cout << " |  \\| | | |  \\ \\  / /| |__  | |       | |" << endl;
@@ -1427,6 +1428,7 @@ void mostrarMensajeNivel1()
 void mostrarMensajeNivel2()
 {
     system("cls");
+    color(11);
     cout << "  _   _ _______      ________ _        ___  " << endl;
     cout << " | \\ | |_   _\\ \\    / /  ____| |      |__ \\ " << endl;
     cout << " |  \\| | | |  \\ \\  / /| |__  | |         ) |" << endl;
@@ -1448,6 +1450,7 @@ void mostrarMensajeNivel2()
 void mostrarMensajeNivel3()
 {
     system("cls");
+    color(14);
     cout << "  _   _ _______      ________ _        ____  " << endl;
     cout << " | \\ | |_   _\\ \\    / /  ____| |      |___ \\ " << endl;
     cout << " |  \\| | | |  \\ \\  / /| |__  | |        __) |" << endl;
@@ -2425,6 +2428,7 @@ void juego(int nivel, int& vidas)
 void instrucciones()
 {
     system("cls");
+    color(15); // Color blanco
     cout << "---------------------------------------------------------------------------------" << endl;
     cout << "     ___ _   _ ____ _____ ____  _   _  ____ ____ ___ ___  _   _ _____ ____       " << endl;
     cout << "    |_ _| \\ | / ___|_   _|  _ \\| | | |/ ___/ ___|_ _/ _ \\| \\ | | ____/ ___|      " << endl;
@@ -2433,25 +2437,55 @@ void instrucciones()
     cout << "    |___|_| \\_|____/ |_| |_| \\_\\___/ \\____\\____|___\\___/|_| \\_|_____|____/      " << endl;
     cout << "---------------------------------------------------------------------------------" << endl;
     cout << endl;
+    color(14); // Color amarillo
     cout << "DESCRIPCION" << endl;
+    color(15); // Color blanco
     cout << "Bienvenido a Between Lanes! Preparate para enfrentar el trafico de Lima" << endl;
-    cout << "y aprender a manejar de manera responsable." << endl;
+    cout << "y aprender a manejar de manera responsable. Este juego te desafiara a" << endl;
+    cout << "esquivar obstaculos y recoger power-ups mientras avanzas por niveles" << endl;
+    cout << "cada vez mas dificiles" << endl;
     cout << endl;
+    color(14); // Color amarillo
     cout << "CONTROLES BASICOS" << endl;
+    color(15); // Color blanco
     cout << "Flecha Arriba: Mover hacia arriba" << endl;
     cout << "Flecha Abajo: Mover hacia abajo" << endl;
     cout << "Flecha Derecha: Mover a la derecha" << endl;
     cout << "Flecha Izquierda: Mover a la izquierda" << endl;
     cout << endl;
+    color(14); // Color amarillo
     cout << "OBJETIVO DEL JUEGO" << endl;
+    color(15); // Color blanco
     cout << "Esquivar obstaculos y llegar lo mas lejos posible sin chocar." << endl;
     cout << "Manten la calma y planea tus movimientos con anticipacion." << endl;
     cout << endl;
-    cout << "CONSEJOS" << endl;
-    cout << "No te apresures, la paciencia es clave para sobrevivir en el trafico." << endl;
-    cout << "Manten la vista en el camino y evita distracciones." << endl;
+    color(14); // Color amarillo
+    cout << "POWER-UPS" << endl;
+    color(15); // Color blanco
+    cout << "Coche de Reparacion: Restaura una vida." << endl;
+    cout << "Coche de Escudo: Activa un escudo temporal." << endl;
+    cout << "Coche de Velocidad: Aumenta la velocidad temporalmente." << endl;
+    cout << endl;
+    color(14); // Color amarillo
+    cout << "OBSTACULOS" << endl;
+    color(15); // Color blanco
+    cout << "Conos: Evitalos para no perder una vida." << endl;
+    cout << "Llantas: Evitalas para no perder una vida." << endl;
+    cout << endl;
+    color(14); // Color amarillo
+    cout << "NIVELES" << endl;
+    color(15); // Color blanco
+    cout << "Nivel 1: Trafico ligero." << endl;
+    cout << "Nivel 2: Trafico moderado." << endl;
+    cout << "Nivel 3: Trafico pesado." << endl;
+    cout << endl;
+    color(14); // Color verde
+    cout << "Esperamos que disfrutes del juego y aprendas a manejar de manera mas segura y responsable." << endl;
     cout << "Buena suerte!" << endl;
-    esperarTecla();
+    cout << endl;
+    color(15); // Color blanco
+    esperarTecla(); // Espera a que el usuario presione una tecla para regresar al menú principal
+    system("cls"); // Limpiar la pantalla nuevamente
 }
 
 // Muestra los créditos del juego
@@ -2471,15 +2505,20 @@ void creditos()
         << endl;
     cout << "   \\/_____/   \\/_/ /_/   \\/_____/   \\/____/   \\/_/     \\/_/   \\/_____/   \\/_____/  " << endl;
     cout << "                                                                                   " << endl;
+    color(14); // Color amarillo
     cout << "                          UPC CAMPUS SAN MIGUEL                                    " << endl;
     cout << "                     INTRODUCCION A LOS ALGORITMOS                                 " << endl;
     cout << "                                                                                   " << endl;
+    color(14); // Color amarillo
     cout << "                             PROGRAMADORES                                         " << endl;
+    color(15); // Color blanco
     cout << "                       Ventosilla Chelge Nicolas                                   " << endl;
     cout << "                          Ponce Wong Jarumi                                        " << endl;
     cout << "                         Celis Salinas Alvaro                                      " << endl;
     cout << "                                                                                   " << endl;
+    color(14); // Color amarillo
     cout << "                               DOCENTE                                             " << endl;
+    color(15); // Color blanco
     cout << "                         Rojas Sihuay Diego                                        " << endl;
     cout << "                                                                                   " << endl;
     cout << "                                                                                   " << endl;
