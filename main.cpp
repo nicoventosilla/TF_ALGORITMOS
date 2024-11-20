@@ -9,10 +9,10 @@
 using namespace std;
 
 // Constantes
-const char CUBO = 219;
-const int COLOR_COCHE_PRINCIPAL = 15;
-const int NUM_ENEMY_CARS = 9;
-int vidas = 3;
+const char CUBO = 219; // Caracter para dibujar un cubo
+const int COLOR_COCHE_PRINCIPAL = 15; // Color del coche principal
+const int NUM_ENEMY_CARS = 9; // Número de coches enemigos
+int vidas = 3; // Número de vidas
 
 // Estructura para los coches
 struct Coche
@@ -63,12 +63,12 @@ int generarAleatorio(int min, int max)
 void esperarTecla()
 {
     cout << endl << "Presione <ESCAPE> para volver al menu principal" << endl;
-    char tecla;
+    char tecla; // Variable para almacenar la tecla presionada
     do
     {
-        tecla = _getch();
+        tecla = _getch(); // Leer la tecla presionada
     }
-    while (tecla != 27);
+    while (tecla != 27); // Repetir hasta que la tecla presionada sea ESCAPE
     system("cls");
 }
 
@@ -216,11 +216,12 @@ void letraS(int x, int y)
     cout << "|___|" << endl;
 }
 
+// Mostrar el tiempo restante
 void mostrarTiempo(int tiempoRestante)
 {
-    int segundos = tiempoRestante % 60;
-    int decenas = segundos / 10;
-    int unidades = segundos % 10;
+    int segundos = tiempoRestante % 60; // Calcular los segundos restantes
+    int decenas = segundos / 10; // Calcular las decenas de los segundos
+    int unidades = segundos % 10; // Calcular las unidades de los segundos
 
     // Mostrar la función tiempo
     letraTiempo(155, 0);
@@ -339,9 +340,9 @@ void letraEscudo(int x, int y)
 
 void mostrarEscudo(int tiempoRestante)
 {
-    int segundos = tiempoRestante % 60;
-    int decenas = segundos / 10;
-    int unidades = segundos % 10;
+    int segundos = tiempoRestante % 60; // Calcular los segundos restantes
+    int decenas = segundos / 10; // Calcular las decenas de los segundos
+    int unidades = segundos % 10; // Calcular las unidades de los segundos
 
     color(11);
     // Mostrar la palabra "ESCUDO"
@@ -439,9 +440,9 @@ void letraVelocidad(int x, int y)
 
 void mostrarVelocidad(int tiempoRestanteVelocidad)
 {
-    int segundos = tiempoRestanteVelocidad % 60;
-    int decenas = segundos / 10;
-    int unidades = segundos % 10;
+    int segundos = tiempoRestanteVelocidad % 60; // Calcular los segundos restantes
+    int decenas = segundos / 10; // Calcular las decenas de los segundos
+    int unidades = segundos % 10; // Calcular las unidades de los segundos
 
     // Mostrar la palabra "VELOCIDAD"
     letraVelocidad(155, 15);
@@ -577,6 +578,7 @@ void dibujarSemaforo(int x, int y)
     cout << CUBO;
 }
 
+// DIBUJAR FONDOS DE LOS NIVELES
 int FONDO_NIVEL_1[15][150] = {
     {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -825,14 +827,14 @@ void dibujarEscenarioNivel1()
     {
         for (int j = 0; j < 150; j++)
         {
-            if (FONDO_NIVEL_1_PARTE_ABAJO[i][j] == 6)
+            if (FONDO_NIVEL_1_PARTE_ABAJO[i][j] == 6) // Si es 6, dibuja un cubo gris
             {
-                color(8);
-                cout << CUBO;
+                color(8); // Color gris
+                cout << CUBO; // Dibuja un cubo
             }
             else if (FONDO_NIVEL_1_PARTE_ABAJO[i][j] == 7)
             {
-                color(15);
+                color(15); // Color blanco
                 cout << CUBO;
             }
         }
@@ -845,7 +847,7 @@ void dibujarEscenarioNivel1()
     {
         for (int k = 0; k < 4; k++) // Dibuja 4 cubos
         {
-            gotoxy(j + k, 21);
+            gotoxy(j + k, 21); // Posición en x y y
             cout << CUBO;
             gotoxy(j + k, 28);
             cout << CUBO;
@@ -971,17 +973,17 @@ void dibujarEscenarioNivel2()
         {
             if (FONDO_NIVEL_2[i][j] == 2)
             {
-                color(11);
+                color(11); // Color Turquesa
                 cout << CUBO;
             }
             else if (FONDO_NIVEL_2[i][j] == 3)
             {
-                color(10);
+                color(10); // Color Verde Claro
                 cout << CUBO;
             }
             else if (FONDO_NIVEL_2[i][j] == 4)
             {
-                color(14);
+                color(14); // Color Amarillo
                 cout << CUBO;
             }
             else if (FONDO_NIVEL_2[i][j] == 7)
@@ -998,7 +1000,6 @@ void dibujarEscenarioNivel2()
         cout << endl;
     }
 
-    // Código para dibujar el escenario del nivel 2
     dibujarSemaforo(143, 5);
 
     // Rectángulo inferior
@@ -1009,12 +1010,12 @@ void dibujarEscenarioNivel2()
         {
             if (FONDO_NIVEL_1[i][j] == 0)
             {
-                color(10);
+                color(10); // Color Verde Claro
                 cout << CUBO;
             }
             else if (FONDO_NIVEL_1[i][j] == 3)
             {
-                color(2);
+                color(2); // Color Verde Oscuro
                 cout << CUBO;
             }
         }
@@ -1340,8 +1341,8 @@ void moverCoche(Coche& coche)
         }
     }
     borrarCoche(coche); // Borrar el coche de la posición actual
-    coche.x += coche.dx * coche.velocidad; // Movemos el coche en la dirección especificada
-    coche.y += coche.dy * coche.velocidad;
+    coche.x += coche.dx * coche.velocidad; // Movemos el coche en la dirección x (izquierda o derecha)
+    coche.y += coche.dy * coche.velocidad; // Movemos el coche en la dirección y (arriba o abajo)
 
     // Limitar el movimiento del coche dentro de la pista
     if (coche.x < 0) coche.x = 0;
@@ -1424,7 +1425,6 @@ void mostrarMensajeNivel1()
     Sleep(2000); // Pausa para mostrar el mensaje de nivel
 }
 
-// Muestra un mensaje antes de jugar el nivel 2
 void mostrarMensajeNivel2()
 {
     system("cls");
@@ -1446,7 +1446,6 @@ void mostrarMensajeNivel2()
     Sleep(2000); // Pausa para mostrar el mensaje de nivel
 }
 
-// Muestra un mensaje antes de jugar el nivel 3
 void mostrarMensajeNivel3()
 {
     system("cls");
@@ -1476,7 +1475,6 @@ void mostrarMensajeNivel3()
     Sleep(2000); // Pausa para mostrar el mensaje de nivel
 }
 
-// Muestra un mensaje de que el jugador perdió el juego
 void mostrarMensajePerdio()
 {
     system("cls"); // Limpiar la pantalla
@@ -1496,7 +1494,6 @@ void mostrarMensajePerdio()
     system("cls"); // Limpiar la pantalla nuevamente
 }
 
-// Muestra un mensaje de que el jugador ganó el juego
 void mostrarMensajeGanasteElJuego(int x, int y)
 {
     system("cls"); // Limpiar la pantalla
@@ -1818,21 +1815,21 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
     {
         if (cocheAliado.tipo == 1) // Reparación
         {
-            vidas++;
-            cocheAliado.activo = false;
+            vidas++; // Incrementar las vidas
+            cocheAliado.activo = false; // Desactivar el coche aliado
         }
         else if (cocheAliado.tipo == 2) // Escudo
         {
-            escudoActivo = true;
-            tiempoEscudo = time(0);
-            cocheAliado.activo = false;
+            escudoActivo = true; // Activar el escudo
+            tiempoEscudo = time(0); // Establecer el tiempo actual
+            cocheAliado.activo = false; // Desactivar el coche aliado
         }
         else if (cocheAliado.tipo == 3) // Velocidad
         {
-            velocidadActiva = true;
-            tiempoVelocidad = time(0);
-            cochePrincipal.velocidad = 2;
-            cocheAliado.activo = false;
+            velocidadActiva = true; // Activar la velocidad
+            tiempoVelocidad = time(0); // Establecer el tiempo actual
+            cochePrincipal.velocidad = 2; // Incrementar la velocidad del coche principal
+            cocheAliado.activo = false; // Desactivar el coche aliado
         }
     }
 
@@ -1844,8 +1841,8 @@ void moverCocheAliado(CocheAliado& cocheAliado, Coche& cochePrincipal, int& vida
             cochesEnemigos[i].y < cocheAliado.y + 5 &&
             cochesEnemigos[i].y + 5 > cocheAliado.y)
         {
-            borrarCoche(cochesEnemigos[i]);
-            cochesEnemigos[i].x += 10;
+            borrarCoche(cochesEnemigos[i]); // Borrar el coche enemigo
+            cochesEnemigos[i].x += 10; // Mover el coche enemigo a la derecha
         }
     }
 
@@ -1936,6 +1933,7 @@ void inicializarCono(Cono& cono, int carrilOcupado = -1, int llantaX = -1, int l
     cono.activo = true; // Activar el cono
 }
 
+// Estructura para las llantas
 struct Llanta
 {
     int x, y; // Posición de la llanta
@@ -1945,7 +1943,7 @@ struct Llanta
 
 void dibujarLlanta(const Llanta& llanta)
 {
-    if (!llanta.activo) return;
+    if (!llanta.activo) return; // Si la llanta no está activa, no hacer nada
     color(llanta.color);
     gotoxy(llanta.x, llanta.y);
     cout << "  " << CUBO << CUBO << "  ";
@@ -2004,8 +2002,6 @@ void inicializarLlanta(Llanta& llanta, int carrilOcupado = -1, int conoX = -1, i
     llanta.activo = true; // Activar la llanta
 }
 
-// FUNCION PRINCIPAL DEL JUEGO
-
 // Función principal que controla el flujo del juego según el nivel actual
 void juego(int nivel, int& vidas);
 
@@ -2033,7 +2029,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
     // Inicializar los coches enemigos
     int numCochesEnemigos = 3 + (nivel - 1) * 2; // De 3 a 7 coches enemigos
-    // int numCochesEnemigos = nivel * 3; // 3 coches en el nivel 1, 6 en el nivel 2, 9 en el nivel 3
+    // int numCochesEnemigos = nivel * 3; // 3 coches e    n el nivel 1, 6 en el nivel 2, 9 en el nivel 3
     inicializarCochesEnemigos(numCochesEnemigos, nivel); // Inicializar los coches enemigos
 
     // Inicializar los coches aliados
@@ -2057,13 +2053,13 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     int duracionLlanta = 6; // Duración de la llanta en segundos
 
     // Variables para controlar el tiempo de los coches aliados
-    bool escudoActivo = false;
-    time_t tiempoEscudo = 0;
-    int tiempoRestanteEscudo = 0;
+    bool escudoActivo = false; // Indica si el escudo está activo
+    time_t tiempoEscudo = 0; // Tiempo de activación del escudo
+    int tiempoRestanteEscudo = 0; // Tiempo restante del escudo
 
-    bool velocidadActiva = false;
-    time_t tiempoVelocidad = 0;
-    int tiempoRestanteVelocidad = 0;
+    bool velocidadActiva = false; // Indica si la velocidad está activa
+    time_t tiempoVelocidad = 0; // Tiempo de activación de la velocidad
+    int tiempoRestanteVelocidad = 0; // Tiempo restante de la velocidad
 
     // Dibujar el escenario según el nivel
     switch (nivel)
@@ -2097,33 +2093,20 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
     // Bucle principal del juego
     while (juegoActivo)
     {
-        // Mostrar información del juego
+        // Mostrar las vidas restantes
         gotoxy(160, 5);
         color(15);
         mostrarVidas(vidas);
 
         // Mostrar el tiempo transcurrido
-        time_t tiempoActual = time(0);
-        int tiempoRestante = tiempoNivel - difftime(tiempoActual, tiempoInicio);
-        mostrarTiempo(tiempoRestante);
+        time_t tiempoActual = time(0); // Obtener el tiempo actual
+        int tiempoRestante = tiempoNivel - difftime(tiempoActual, tiempoInicio); // Calcular el tiempo restante
+        mostrarTiempo(tiempoRestante); // Mostrar el tiempo restante
 
         // Verificar si se ha agotado el tiempo del nivel
         if (tiempoRestante <= 0)
         {
             break;
-            juegoActivo = false;
-            if (nivel == 3)
-            {
-                mostrarMensajeGanasteElJuego(0, 0);
-            }
-            else
-            {
-                mostrarMensajeGanaste(0, 0);
-                if (siguienteNivel != 0)
-                {
-                    juego(siguienteNivel, vidas);
-                }
-            }
         }
 
         // Verificar si es el momento de activar los coches aliados
@@ -2145,7 +2128,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         // Verificar si el escudo está activo
         if (escudoActivo)
         {
-            tiempoRestanteEscudo = 10 - difftime(tiempoActual, tiempoEscudo);
+            tiempoRestanteEscudo = 10 - difftime(tiempoActual, tiempoEscudo); // Calcular el tiempo restante del escudo
             if (tiempoRestanteEscudo <= 0)
             {
                 escudoActivo = false; // Desactivar el escudo
@@ -2154,14 +2137,14 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
             }
             else
             {
-                mostrarEscudo(tiempoRestanteEscudo);
+                mostrarEscudo(tiempoRestanteEscudo); // Mostrar el tiempo restante del escudo
             }
         }
 
         // Verificar si la velocidad está activa
         if (velocidadActiva)
         {
-            tiempoRestanteVelocidad = 10 - difftime(tiempoActual, tiempoVelocidad);
+            tiempoRestanteVelocidad = 10 - difftime(tiempoActual, tiempoVelocidad); // Calcular el tiempo restante de la velocidad
             if (tiempoRestanteVelocidad <= 0)
             {
                 velocidadActiva = false; // Desactivar la velocidad
@@ -2178,7 +2161,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         // Verificar si es el momento de activar el cono
         if (!cono.activo && tiempoRestante == tiempoNivel - tiempoAparicionCono)
         {
-            inicializarCono(cono, llanta.activo ? llanta.y : -1, llanta.x, llanta.y);
+            inicializarCono(cono, llanta.activo ? llanta.y : -1, llanta.x, llanta.y); // Inicializar el cono
             dibujarCono(cono);
         }
 
@@ -2186,7 +2169,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         if (cono.activo && tiempoRestante == tiempoNivel - tiempoAparicionCono - duracionCono)
         {
             borrarCono(cono);
-            cono.activo = false;
+            cono.activo = false; // Desactivar el cono
         }
 
         // Verificar colisión con el coche principal
@@ -2221,7 +2204,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         // Verificar si es el momento de activar la llanta
         if (!llanta.activo && tiempoRestante == tiempoNivel - tiempoAparicionLlanta)
         {
-            inicializarLlanta(llanta, cono.activo ? cono.y : -1, cono.x, cono.y);
+            inicializarLlanta(llanta, cono.activo ? cono.y : -1, cono.x, cono.y); // Inicializar la llanta
             dibujarLlanta(llanta);
         }
 
@@ -2229,7 +2212,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         if (llanta.activo && tiempoRestante == tiempoNivel - tiempoAparicionLlanta - duracionLlanta)
         {
             borrarLlanta(llanta);
-            llanta.activo = false;
+            llanta.activo = false; // Desactivar la llanta
         }
 
         // Verificar colisión con el coche principal
@@ -2374,6 +2357,7 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
 
     system("cls");
 
+    // Verificar si el jugador ha ganado el nivel
     if (nivel == 3)
     {
         mostrarMensajeGanasteElJuego(0, 0);
