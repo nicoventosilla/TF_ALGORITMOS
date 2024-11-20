@@ -14,17 +14,6 @@ const int COLOR_COCHE_PRINCIPAL = 15; // Color del coche principal
 const int NUM_ENEMY_CARS = 9; // Número de coches enemigos
 int vidas = 3; // Número de vidas
 
-// Estructura para los coches
-struct Coche
-{
-    int x, y; // Posición del coche
-    int dx, dy; // Dirección del movimiento
-    int color; // Color del coche
-    int velocidad; // Velocidad del coche
-};
-
-Coche cochesEnemigos[NUM_ENEMY_CARS]; // Arreglo de coches enemigos
-
 // FUNCIONES DE UTILIDADES
 
 // Oculta el cursor de la consola
@@ -1191,109 +1180,6 @@ void dibujarEscenarioNivel3()
     }
 }
 
-// Dibuja el coche principal en la posición especificada
-void dibujarCochePrincipal(const Coche& coche)
-{
-    color(COLOR_COCHE_PRINCIPAL);
-    for (int i = 0; i < 8; i++)
-    {
-        gotoxy(coche.x + i, coche.y);
-        cout << CUBO;
-    }
-    for (int i = 0; i < 5; i++)
-    {
-        gotoxy(coche.x + i, coche.y + 1);
-        cout << CUBO;
-    }
-    gotoxy(coche.x + 7, coche.y + 1);
-    cout << CUBO;
-    for (int i = 0; i < 10; i++)
-    {
-        gotoxy(coche.x + i, coche.y + 2);
-        cout << CUBO;
-    }
-    for (int i = 0; i < 10; i++)
-    {
-        gotoxy(coche.x + i, coche.y + 3);
-        cout << CUBO;
-    }
-    color(3);
-    for (int i = 1; i <= 2; i++)
-    {
-        gotoxy(coche.x + 4 + i, coche.y + 1);
-        cout << CUBO;
-    }
-    color(8);
-    for (int i = 1; i <= 2; i++)
-    {
-        gotoxy(coche.x + i, coche.y + 4);
-        cout << CUBO;
-    }
-    for (int i = 1; i <= 2; i++)
-    {
-        gotoxy(coche.x + 5 + i, coche.y + 4);
-        cout << CUBO;
-    }
-}
-
-// Dibuja el coche enemigo en la posición especificada
-void dibujarCocheEnemigo(const Coche& coche)
-{
-    color(coche.color);
-    for (int i = 0; i < 8; i++)
-    {
-        gotoxy(coche.x + 2 + i, coche.y);
-        cout << CUBO;
-    }
-    for (int i = 1; i <= 5; i++)
-    {
-        gotoxy(coche.x + 4 + i, coche.y + 1);
-        cout << CUBO;
-    }
-    gotoxy(coche.x + 2, coche.y + 1);
-    cout << CUBO;
-    for (int i = 0; i < 10; i++)
-    {
-        gotoxy(coche.x + i, coche.y + 2);
-        cout << CUBO;
-    }
-    for (int i = 0; i < 10; i++)
-    {
-        gotoxy(coche.x + i, coche.y + 3);
-        cout << CUBO;
-    }
-    color(3);
-    for (int i = 1; i <= 2; i++)
-    {
-        gotoxy(coche.x + 2 + i, coche.y + 1);
-        cout << CUBO;
-    }
-    color(8);
-    for (int i = 1; i <= 2; i++)
-    {
-        gotoxy(coche.x + 1 + i, coche.y + 4);
-        cout << CUBO;
-    }
-    for (int i = 1; i <= 2; i++)
-    {
-        gotoxy(coche.x + 6 + i, coche.y + 4);
-        cout << CUBO;
-    }
-}
-
-// Borra un coche de la pantalla
-void borrarCoche(const Coche& coche)
-{
-    for (int i = 0; i < 5; i++)
-    {
-        for (int j = 0; j < 10; j++)
-        {
-            gotoxy(coche.x + j, coche.y + i);
-            cout << ' ';
-        }
-    }
-}
-
 // Redibuja las líneas blancas horizontales
 void redibujarLineas()
 {
@@ -1308,102 +1194,6 @@ void redibujarLineas()
             cout << CUBO;
         }
     }
-}
-
-// FUNCIONES DE LA LOGICA DEL JUEGO
-
-// Mueve un coche según la entrada del usuario
-void moverCoche(Coche& coche)
-{
-    if (_kbhit()) // Si se presiona una tecla
-    {
-        char tecla = _getch(); // Leer la tecla presionada
-        if (tecla == 27) exit(0); // Si se presiona la tecla ESCAPE, salir del juego
-        else if (tecla == 72) // Flecha arriba
-        {
-            coche.dx = 0;
-            coche.dy = -1; // Mover 1 unidad hacia arriba
-        }
-        else if (tecla == 80) // Flecha abajo
-        {
-            coche.dx = 0;
-            coche.dy = 1; // Mover 1 unidad hacia abajo
-        }
-        else if (tecla == 77) // Flecha derecha
-        {
-            coche.dx = 1; // Mover 2 unidades a la derecha
-            coche.dy = 0;
-        }
-        else if (tecla == 75) // Flecha izquierda
-        {
-            coche.dx = -1; // Mover 2 unidades a la izquierda
-            coche.dy = 0;
-        }
-    }
-    borrarCoche(coche); // Borrar el coche de la posición actual
-    coche.x += coche.dx * coche.velocidad; // Movemos el coche en la dirección x (izquierda o derecha)
-    coche.y += coche.dy * coche.velocidad; // Movemos el coche en la dirección y (arriba o abajo)
-
-    // Limitar el movimiento del coche dentro de la pista
-    if (coche.x < 0) coche.x = 0;
-    if (coche.x >= 150 - 10) coche.x = 150 - 10;
-    if (coche.y < 15) coche.y = 15;
-    if (coche.y >= 35 - 5) coche.y = 35 - 5;
-
-    redibujarLineas(); // Redibujar las líneas blancas
-
-    dibujarCochePrincipal(coche); // Dibujar el coche en la nueva posición
-}
-
-// Dibuja una X en la posición especificada
-void dibujarX(int x, int y)
-{
-    color(15); // Color blanco
-    gotoxy(x, y);
-    cout << CUBO;
-    gotoxy(x + 1, y + 1);
-    cout << CUBO;
-    gotoxy(x + 2, y + 2);
-    cout << CUBO;
-    gotoxy(x + 3, y + 3);
-    cout << CUBO;
-    gotoxy(x + 4, y + 4);
-    cout << CUBO;
-    gotoxy(x + 4, y);
-    cout << CUBO;
-    gotoxy(x + 3, y + 1);
-    cout << CUBO;
-    gotoxy(x + 2, y + 2);
-    cout << CUBO;
-    gotoxy(x + 1, y + 3);
-    cout << CUBO;
-    gotoxy(x, y + 4);
-    cout << CUBO;
-}
-
-void borrarX(int x, int y)
-{
-    color(0); // Color negro
-    gotoxy(x, y);
-    cout << CUBO;
-    gotoxy(x + 1, y + 1);
-    cout << CUBO;
-    gotoxy(x + 2, y + 2);
-    cout << CUBO;
-    gotoxy(x + 3, y + 3);
-    cout << CUBO;
-    gotoxy(x + 4, y + 4);
-    cout << CUBO;
-    gotoxy(x + 4, y);
-    cout << CUBO;
-    gotoxy(x + 3, y + 1);
-    cout << CUBO;
-    gotoxy(x + 2, y + 2);
-    cout << CUBO;
-    gotoxy(x + 1, y + 3);
-    cout << CUBO;
-    gotoxy(x, y + 4);
-    cout << CUBO;
 }
 
 // Muestra un mensaje antes de jugar el nivel 1
@@ -1592,6 +1382,215 @@ void mostrarMensajeGanaste(int x, int y)
 
     cout << "Presione Enter para continuar..." << endl;
     while (_getch() != 13); // Espera a que el usuario presione Enter (código ASCII 13)
+}
+
+
+// Estructura para los coches
+struct Coche
+{
+    int x, y; // Posición del coche
+    int dx, dy; // Dirección del movimiento
+    int color; // Color del coche
+    int velocidad; // Velocidad del coche
+};
+
+Coche cochesEnemigos[NUM_ENEMY_CARS]; // Arreglo de coches enemigos
+
+// Dibuja el coche principal en la posición especificada
+void dibujarCochePrincipal(const Coche& coche)
+{
+    color(COLOR_COCHE_PRINCIPAL);
+    for (int i = 0; i < 8; i++)
+    {
+        gotoxy(coche.x + i, coche.y);
+        cout << CUBO;
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 1);
+        cout << CUBO;
+    }
+    gotoxy(coche.x + 7, coche.y + 1);
+    cout << CUBO;
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 2);
+        cout << CUBO;
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 3);
+        cout << CUBO;
+    }
+    color(3);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 4 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    color(8);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 4);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 5 + i, coche.y + 4);
+        cout << CUBO;
+    }
+}
+
+// Dibuja el coche enemigo en la posición especificada
+void dibujarCocheEnemigo(const Coche& coche)
+{
+    color(coche.color);
+    for (int i = 0; i < 8; i++)
+    {
+        gotoxy(coche.x + 2 + i, coche.y);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 5; i++)
+    {
+        gotoxy(coche.x + 4 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    gotoxy(coche.x + 2, coche.y + 1);
+    cout << CUBO;
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 2);
+        cout << CUBO;
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        gotoxy(coche.x + i, coche.y + 3);
+        cout << CUBO;
+    }
+    color(3);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 2 + i, coche.y + 1);
+        cout << CUBO;
+    }
+    color(8);
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 1 + i, coche.y + 4);
+        cout << CUBO;
+    }
+    for (int i = 1; i <= 2; i++)
+    {
+        gotoxy(coche.x + 6 + i, coche.y + 4);
+        cout << CUBO;
+    }
+}
+
+// Borra un coche de la pantalla
+void borrarCoche(const Coche& coche)
+{
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            gotoxy(coche.x + j, coche.y + i);
+            cout << ' ';
+        }
+    }
+}
+
+// Mueve un coche según la entrada del usuario
+void moverCoche(Coche& coche)
+{
+    if (_kbhit()) // Si se presiona una tecla
+    {
+        char tecla = _getch(); // Leer la tecla presionada
+        if (tecla == 27) exit(0); // Si se presiona la tecla ESCAPE, salir del juego
+        else if (tecla == 72) // Flecha arriba
+        {
+            coche.dx = 0;
+            coche.dy = -1; // Mover 1 unidad hacia arriba
+        }
+        else if (tecla == 80) // Flecha abajo
+        {
+            coche.dx = 0;
+            coche.dy = 1; // Mover 1 unidad hacia abajo
+        }
+        else if (tecla == 77) // Flecha derecha
+        {
+            coche.dx = 1; // Mover 2 unidades a la derecha
+            coche.dy = 0;
+        }
+        else if (tecla == 75) // Flecha izquierda
+        {
+            coche.dx = -1; // Mover 2 unidades a la izquierda
+            coche.dy = 0;
+        }
+    }
+    borrarCoche(coche); // Borrar el coche de la posición actual
+    coche.x += coche.dx * coche.velocidad; // Movemos el coche en la dirección x (izquierda o derecha)
+    coche.y += coche.dy * coche.velocidad; // Movemos el coche en la dirección y (arriba o abajo)
+
+    // Limitar el movimiento del coche dentro de la pista
+    if (coche.x < 0) coche.x = 0;
+    if (coche.x >= 150 - 10) coche.x = 150 - 10;
+    if (coche.y < 15) coche.y = 15;
+    if (coche.y >= 35 - 5) coche.y = 35 - 5;
+
+    redibujarLineas(); // Redibujar las líneas blancas
+
+    dibujarCochePrincipal(coche); // Dibujar el coche en la nueva posición
+}
+
+// Dibuja una X en la posición especificada
+void dibujarX(int x, int y)
+{
+    color(15); // Color blanco
+    gotoxy(x, y);
+    cout << CUBO;
+    gotoxy(x + 1, y + 1);
+    cout << CUBO;
+    gotoxy(x + 2, y + 2);
+    cout << CUBO;
+    gotoxy(x + 3, y + 3);
+    cout << CUBO;
+    gotoxy(x + 4, y + 4);
+    cout << CUBO;
+    gotoxy(x + 4, y);
+    cout << CUBO;
+    gotoxy(x + 3, y + 1);
+    cout << CUBO;
+    gotoxy(x + 2, y + 2);
+    cout << CUBO;
+    gotoxy(x + 1, y + 3);
+    cout << CUBO;
+    gotoxy(x, y + 4);
+    cout << CUBO;
+}
+
+void borrarX(int x, int y)
+{
+    color(0); // Color negro
+    gotoxy(x, y);
+    cout << CUBO;
+    gotoxy(x + 1, y + 1);
+    cout << CUBO;
+    gotoxy(x + 2, y + 2);
+    cout << CUBO;
+    gotoxy(x + 3, y + 3);
+    cout << CUBO;
+    gotoxy(x + 4, y + 4);
+    cout << CUBO;
+    gotoxy(x + 4, y);
+    cout << CUBO;
+    gotoxy(x + 3, y + 1);
+    cout << CUBO;
+    gotoxy(x + 2, y + 2);
+    cout << CUBO;
+    gotoxy(x + 1, y + 3);
+    cout << CUBO;
+    gotoxy(x, y + 4);
+    cout << CUBO;
 }
 
 
@@ -2144,7 +2143,8 @@ void jugarNivel(int nivel, int tiempoNivel, int siguienteNivel, int& vidas)
         // Verificar si la velocidad está activa
         if (velocidadActiva)
         {
-            tiempoRestanteVelocidad = 10 - difftime(tiempoActual, tiempoVelocidad); // Calcular el tiempo restante de la velocidad
+            tiempoRestanteVelocidad = 10 - difftime(tiempoActual, tiempoVelocidad);
+            // Calcular el tiempo restante de la velocidad
             if (tiempoRestanteVelocidad <= 0)
             {
                 velocidadActiva = false; // Desactivar la velocidad
@@ -2405,8 +2405,6 @@ void juego(int nivel, int& vidas)
         break;
     }
 }
-
-// FUNCIONES DE LA INTERFAZ
 
 // Muestra las instrucciones del juego
 void instrucciones()
@@ -2746,7 +2744,6 @@ void mostrarMenu()
         "************************************************************************************************************************************"
         << endl;
 }
-
 
 // Función principal
 int main()
